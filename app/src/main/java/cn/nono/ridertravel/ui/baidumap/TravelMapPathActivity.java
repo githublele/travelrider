@@ -74,7 +74,7 @@ public class TravelMapPathActivity extends Activity implements View.OnClickListe
     public static final    String LNG_KEY = "lng";
     public static final    String ADDR_KEY = "addr";
 
-
+int bb;
     // 浏览路线节点相关
     Button mBtnPre = null; // 上一个节点
     Button mBtnNext = null; // 下一个节点
