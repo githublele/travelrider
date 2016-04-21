@@ -1,6 +1,5 @@
 package cn.nono.ridertravel.ui.baidumap;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,6 +27,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVGeoPoint;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SaveCallback;
 import com.baidu.mapapi.map.BaiduMap;
@@ -70,13 +70,14 @@ import cn.nono.ridertravel.R;
 import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.bean.av.AVTravelMapPath;
 import cn.nono.ridertravel.debug.ToastUtil;
+import cn.nono.ridertravel.ui.base.BaseNoTitleActivity;
 import cn.nono.ridertravel.util.DrivingRouteOverlay;
 import cn.nono.ridertravel.util.OverlayManager;
 
 /**
  * Created by Administrator on 2016/4/6.
  */
-public class TravelMapPathActivity extends Activity implements View.OnClickListener,OnGetRoutePlanResultListener{
+public class TravelMapPathActivity extends BaseNoTitleActivity implements View.OnClickListener,OnGetRoutePlanResultListener{
 
 
     // 浏览路线节点相关
@@ -490,9 +491,9 @@ public class TravelMapPathActivity extends Activity implements View.OnClickListe
     private DialogInterface.OnClickListener mDlgOnClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-           if (DialogInterface.BUTTON_NEGATIVE == which) {
+           if (DialogInterface.BUTTON_POSITIVE == which) {
               String str =  dlgInputEditText.getText().toString();
-               if(null == mPathName || mPathName.isEmpty())
+               if(null == str || str.isEmpty())
                    return;
                mPathName = str;
                dialog.dismiss();
@@ -541,8 +542,8 @@ public class TravelMapPathActivity extends Activity implements View.OnClickListe
             dlg =  new AlertDialog.Builder(TravelMapPathActivity.this)
                     .setTitle("请输入路线名称")
                     .setView(dlgInputEditText)
-                    .setCancelable(false).setPositiveButton("确定", null)
-                    .setNegativeButton("取消", null).create();
+                    .setCancelable(false).setPositiveButton("确定", mDlgOnClickListener)
+                    .setNegativeButton("取消", mDlgOnClickListener).create();
             dlg.show();
 
     }
@@ -654,12 +655,22 @@ public class TravelMapPathActivity extends Activity implements View.OnClickListe
         if(null == mPathName || mPathName.isEmpty() || mRouteLatLngPoints.size() < 1)
             return null;
         AVMUser user = AVUser.getCurrentUser(AVMUser.class);
-        if(null == user)
+        if(null == user) {
+            login();
             return null;
+        }
 
         AVTravelMapPath path = new AVTravelMapPath();
         path.setAuthorPointer(user);
-        path.setMapLatlngs(mRouteLatLngPoints);
+        List<AVGeoPoint>  avGeoPoints = new ArrayList<AVGeoPoint>();
+        AVGeoPoint avGeoPoint = null;
+        for (LatLng latlng:mRouteLatLngPoints) {
+            avGeoPoint = new AVGeoPoint();
+            avGeoPoint.setLatitude(latlng.latitude);
+            avGeoPoint.setLongitude(latlng.longitude);
+            avGeoPoints.add(avGeoPoint);
+        }
+        path.setMapLatlngs(avGeoPoints);
         path.setName(mPathName);
         return path;
     }
@@ -686,4 +697,5 @@ public class TravelMapPathActivity extends Activity implements View.OnClickListe
         mMapView.onDestroy();
         super.onDestroy();
     }
+
 }

@@ -12,6 +12,11 @@ public class AVMUser extends AVUser{
 
     private final static String JOINED_ACTIVITY_RELATION_KEY = "TravelActivitys";
     private final static String TRAVEL_MAP_PATH_KEY = "TravelMapPaths";
+    private final static String CREATE_ACTIVITY_RELATION_KEY = "CreateTravelActivitys";
+
+    public  AVRelation<AVTravelActivity> getCreateTravelActivitysRelation() {
+        return getRelation(CREATE_ACTIVITY_RELATION_KEY);
+    }
 
     public AVRelation<AVTravelActivity> getJoinedTravelActivitysRelation() {
         return  getRelation(JOINED_ACTIVITY_RELATION_KEY);

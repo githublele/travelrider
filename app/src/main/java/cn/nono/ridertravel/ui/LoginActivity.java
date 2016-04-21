@@ -94,6 +94,7 @@ public class LoginActivity extends BaseNoTitleActivity implements OnClickListene
 					ToastUtil.toastShort(LoginActivity.this,arg0.getMessage());
 				} else {
 					ToastUtil.toastShort(LoginActivity.this, "登陆成功");
+					setResult(RESULT_OK);
 					finish();
 				}
 			}

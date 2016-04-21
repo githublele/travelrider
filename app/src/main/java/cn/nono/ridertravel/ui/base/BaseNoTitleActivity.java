@@ -1,10 +1,14 @@
 package cn.nono.ridertravel.ui.base;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 
+import cn.nono.ridertravel.ui.LoginActivity;
+
 public class BaseNoTitleActivity extends Activity {
+	private static final int LOGIN_REQ_CODE = 99999;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -12,5 +16,23 @@ public class BaseNoTitleActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 	}
+
+
+	protected void login() {
+		Intent intent = new Intent(BaseNoTitleActivity.this, LoginActivity.class);
+		startActivityForResult(intent,LOGIN_REQ_CODE);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(LOGIN_REQ_CODE == requestCode) {
+			onLoginActivityResult(resultCode,data)	;
+		}
+	}
+
+	protected void onLoginActivityResult(int resultCode, Intent data) {
+
+	}
+
 
 }

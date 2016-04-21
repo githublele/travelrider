@@ -6,9 +6,11 @@ import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
 import com.baidu.mapapi.SDKInitializer;
 
+import cn.nono.ridertravel.bean.av.AVComment;
 import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.bean.av.AVTravelDiary;
 import cn.nono.ridertravel.bean.av.AVTravelDiaryContent;
+import cn.nono.ridertravel.bean.av.AVTravelMapPath;
 import cn.nono.ridertravel.util.DiskBitmapCache;
 
 public class RiderTravelApplication extends Application {
@@ -22,6 +24,8 @@ public class RiderTravelApplication extends Application {
 		AVObject.registerSubclass(AVMUser.class);
 		AVObject.registerSubclass(AVTravelDiaryContent.class);
 		AVObject.registerSubclass(AVTravelDiary.class);
+		AVObject.registerSubclass(AVComment.class);
+		AVObject.registerSubclass(AVTravelMapPath.class);
 		AVOSCloud.isDebugLogEnabled();
 		AVOSCloud.initialize(this, "znwHiaY89nTixY6q6qHucyvl-gzGzoHsz", "moGC4z10Dwbz8CjzTbgT150l");
 

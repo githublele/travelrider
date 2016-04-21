@@ -6,6 +6,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.SaveCallback;
+
 import org.feezu.liuli.timeselector.TimeSelector;
 
 import java.text.ParseException;
@@ -13,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import cn.nono.ridertravel.R;
+import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.bean.av.AVTravelActivity;
 import cn.nono.ridertravel.bean.av.AVTravelMapPath;
 import cn.nono.ridertravel.debug.ToastUtil;
@@ -125,10 +130,46 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
                 startActivityForResult(intent,PHONE_INPUT_REQ_CODE);
                 break;
             case R.id.issue_btn:
+                createActToNet();
                 break;
             default:
                 break;
         }
+    }
+
+
+    AVMUser mUser = null;
+    private void createActToNet() {
+
+        //必要检查
+
+         mUser = (AVMUser) AVUser.getCurrentUser();
+        if(null == mUser) {
+            login();
+            return;
+        }
+
+        mAVAcitivity.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(null != e) {
+                    e.printStackTrace();
+                    ToastUtil.toastShort(CreateTravelActivity.this,"创建失败");
+                    return;
+                }
+                
+                mUser.getCreateTravelActivitysRelation().add(mAVAcitivity);
+                mUser.getJoinedTravelActivitysRelation().add(mAVAcitivity);
+                mUser.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(AVException e) {
+                        ToastUtil.toastShort(CreateTravelActivity.this,"succession");
+                    }
+                });
+                ;
+            }
+        });
+
     }
 
 

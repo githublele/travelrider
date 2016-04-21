@@ -1,13 +1,15 @@
 package cn.nono.ridertravel.bean.av;
 
+import com.avos.avoscloud.AVClassName;
+import com.avos.avoscloud.AVGeoPoint;
 import com.avos.avoscloud.AVObject;
-import com.baidu.mapapi.model.LatLng;
 
 import java.util.List;
 
 /**
  * Created by Administrator on 2016/4/21.
  */
+@AVClassName("TravelMapPath")
 public class AVTravelMapPath extends AVObject {
 
     //    private  static final String _key = "";
@@ -23,11 +25,11 @@ public class AVTravelMapPath extends AVObject {
         put(AUTHOR_KEY,user);
     }
 
-    public List<LatLng> getMapPathLatLngArr() {
+    public List<AVGeoPoint> getMapPathLatLngArr() {
         return getList(MAP_LATLNG_PATHS_ARR_KEY);
     }
 
-    public void setMapLatlngs(List<LatLng> latlngs) {
+    public void setMapLatlngs(List<AVGeoPoint> latlngs) {
         put(MAP_LATLNG_PATHS_ARR_KEY,latlngs);
     }
 
@@ -41,6 +43,8 @@ public class AVTravelMapPath extends AVObject {
 
 
 
+
+    AVGeoPoint av = new AVGeoPoint();
 
 
 }
