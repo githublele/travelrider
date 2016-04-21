@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+         android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:alpha="0.8"
+        android:background="@mipmap/diary_default_cover_bg" >
+
+        <ImageView
+            android:id="@+id/user_head_icon_imageview"
+            android:scaleType="fitXY"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:src="@mipmap/ic_launcher" />
+
+       <TextView
+            android:id="@+id/diary_name_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/user_head_icon_imageview"
+            android:layout_toRightOf="@id/user_head_icon_imageview"
+            android:layout_marginLeft="14dp"
+            android:text="日本一日游"
+            android:textSize="15sp"
+            />
+
+        <TextView
+            android:id="@+id/diary_base_info_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/user_head_icon_imageview"
+            android:layout_alignLeft="@+id/diary_name_textview"
+            android:text="2016.01.01	15天		100图"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+        
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/diary_content_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </ListView>
+
+</LinearLayout>

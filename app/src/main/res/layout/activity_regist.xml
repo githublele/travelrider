@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+         <EditText 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:hint="昵称"
+        android:id="@+id/nickname_et"
+        />
+         
+         <RadioGroup 
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:id="@+id/sex_rg"
+             android:orientation="horizontal"
+             >
+             <RadioButton 
+                 android:id="@+id/man_rb"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="男"
+             	 android:checked="true"
+                 />
+              <RadioButton 
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="女"
+                 android:id="@+id/woman_rb"
+                 />
+             
+             
+         </RadioGroup>
+    
+    <EditText 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:hint="邮箱"
+        android:id="@+id/account_et"
+        />
+    
+        <EditText 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:hint="密码"
+        android:id="@+id/password_et"
+        />
+        
+    <Button 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="注册"
+        android:id="@+id/regist_bt"
+        />
+
+</LinearLayout>

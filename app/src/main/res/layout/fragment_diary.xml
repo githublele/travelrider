@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e0e0e0"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+         >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="骑游" />
+
+        <Button
+            android:id="@+id/add_diary_btn"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+" />
+
+        <SearchView
+            android:imeOptions="actionSearch"
+            android:iconifiedByDefault="false"
+            android:inputType="textCapWords"
+            android:id="@+id/search"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" >
+        </SearchView>
+
+        <Button
+            android:id="@+id/user_info"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="XX" />
+
+        <Button
+            android:id="@+id/user_seting"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=">>" />
+        
+    </LinearLayout>
+<android.support.v4.view.ViewPager 
+        android:id="@+id/viewPager" 
+        android:layout_width="match_parent" 
+        android:layout_height="150dp" 
+        />  
+    <ListView
+        android:id="@+id/diary_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        >
+    </ListView>
+
+</LinearLayout>

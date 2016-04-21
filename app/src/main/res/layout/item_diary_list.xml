@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="4dp"
+     >
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/diary_cover_networkimageview"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_centerInParent="true"
+        android:background="@mipmap/photo_2"
+        android:scaleType="centerCrop" />
+
+    <RelativeLayout
+        android:id="@+id/rl_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/start_date_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="2016.02.22"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/tv_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/start_date_tv"
+            android:text=" / "
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/days_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_tip"
+            android:text="3天"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/location_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/start_date_tv"
+            android:text="中国松山湖"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/summary_tv"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="这地点太美了，好可爱按时间的方式将对方理解速度世界上的发生的发生的发生的发生的法师打发士大夫" />
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/cover_network_imageveiw"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_above="@id/summary_tv"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/head_photo" />
+    </RelativeLayout>
+
+</FrameLayout>
