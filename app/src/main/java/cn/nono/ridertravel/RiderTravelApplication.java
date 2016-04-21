@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
+import com.baidu.mapapi.SDKInitializer;
 
 import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.bean.av.AVTravelDiary;
@@ -25,6 +26,9 @@ public class RiderTravelApplication extends Application {
 		AVOSCloud.initialize(this, "znwHiaY89nTixY6q6qHucyvl-gzGzoHsz", "moGC4z10Dwbz8CjzTbgT150l");
 
 		mDiskBitmapCache = new DiskBitmapCache(getCacheDir(),10 * 1024 * 1024);
+
+		SDKInitializer.initialize(getApplicationContext());
+
 	}
 
 	public DiskBitmapCache getDiskBitmapCache() {

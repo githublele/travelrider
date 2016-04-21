@@ -87,7 +87,11 @@
         </activity>
         <activity android:name="cn.nono.ridertravel.ui.diary.DiaryBrowseActivity"></activity>
         <activity android:name="cn.nono.ridertravel.ui.travelact.CreateTravelActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
 
@@ -99,11 +103,7 @@
         </activity>
 
 <activity android:name="cn.nono.ridertravel.ui.baidumap.TravelMapPathActivity">
-    <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
 
-        <category android:name="android.intent.category.LAUNCHER" />
-    </intent-filter>
     </activity>
 
 

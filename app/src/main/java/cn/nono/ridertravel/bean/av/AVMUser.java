@@ -11,8 +11,13 @@ import com.avos.avoscloud.AVUser;
 public class AVMUser extends AVUser{
 
     private final static String JOINED_ACTIVITY_RELATION_KEY = "TravelActivitys";
+    private final static String TRAVEL_MAP_PATH_KEY = "TravelMapPaths";
 
     public AVRelation<AVTravelActivity> getJoinedTravelActivitysRelation() {
         return  getRelation(JOINED_ACTIVITY_RELATION_KEY);
+    }
+
+    public AVRelation<AVTravelMapPath> getTravelMapPathRelation() {
+        return  getRelation(TRAVEL_MAP_PATH_KEY);
     }
 }

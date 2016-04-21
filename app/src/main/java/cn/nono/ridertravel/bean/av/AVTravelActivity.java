@@ -25,6 +25,9 @@ public class AVTravelActivity extends AVObject{
     private final static String ACTIVITY_STATE_KEY = "activityState";
     private final static String PARTICIPATORS_RELATIONS_KEY = "participators";
 
+
+    private final  static String TAVLE_MAP_PATH_KEY = "travelMapPath";
+
     public final static int ACTIVITY_STATE_DEFAULT = 0;
     public final static int ACTIVITY_STATE_WORKING = 10;
     public final static int ACTIVITY_STATE_FINISH = 11;
@@ -37,6 +40,15 @@ public class AVTravelActivity extends AVObject{
 //    Long    endDateMillisTime;
 //    String  phone;
 //    Integer activityState;
+
+
+    public AVTravelMapPath getMapPath() {
+        return getAVObject(TAVLE_MAP_PATH_KEY);
+    }
+
+    public void setTravelMapPath(AVTravelMapPath path) {
+        put(TAVLE_MAP_PATH_KEY,path);
+    }
 
 
     public void setRegistrationDeadline(Long deadlineTime) {

@@ -14,9 +14,11 @@ import java.util.Date;
 
 import cn.nono.ridertravel.R;
 import cn.nono.ridertravel.bean.av.AVTravelActivity;
+import cn.nono.ridertravel.bean.av.AVTravelMapPath;
 import cn.nono.ridertravel.debug.ToastUtil;
 import cn.nono.ridertravel.ui.ContentInputActivity;
 import cn.nono.ridertravel.ui.baidumap.SearchPlaceActivity;
+import cn.nono.ridertravel.ui.baidumap.TravelMapPathActivity;
 import cn.nono.ridertravel.ui.base.BaseNoTitleActivity;
 
 /**
@@ -30,6 +32,7 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
     public final static int TRAVEL_PATH_INPUT_REQ_CODE = 3;
     public final static int FALL_IN_PLACE_INPUT_REQ_CODE = 4;
     public final static int PHONE_INPUT_REQ_CODE = 5;
+
 
     Button backButton;
     Button headlineButton;
@@ -101,6 +104,7 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
                 startActivityForResult(intent,INTRODUCE_INPUT_REQ_CODE);
                 break;
             case R.id.travel_path_btn:
+                createTravelMapPath();
                 break;
             case R.id.fall_in_place_btn:
                 selectFallInPlace();
@@ -125,6 +129,12 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
             default:
                 break;
         }
+    }
+
+
+    private void createTravelMapPath() {
+        Intent intent = new Intent(this, TravelMapPathActivity.class);
+        startActivityForResult(intent,TRAVEL_PATH_INPUT_REQ_CODE);
     }
 
     private void selectFallInPlace() {
@@ -259,6 +269,11 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
     private void travelPathInputResult(int resultCode, Intent data) {
         if(resultCode != RESULT_OK || null == data)
             return;
+        AVTravelMapPath path = data.getParcelableExtra(TravelMapPathActivity.MAP_PATH_KEY);
+        if(null == path)
+            return;
+        travelPathButton.setText(path.getName());
+        mAVAcitivity.setTravelMapPath(path);
     }
 
     private void introduceInputResult(int resultCode, Intent data) {
