@@ -52,15 +52,20 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
     TextView creatorTextView;
 
     AVTravelActivity mAVAcitivity = new AVTravelActivity();
-
+    AVMUser mUser = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_travel_activity);
+        //登录拦截。
+        mUser = (AVMUser) AVUser.getCurrentUser(AVMUser.class);
+        if (mUser == null) {
+            login();
+            finish();
+        }
+
         initView();
-
-
     }
 
     private void initView() {
@@ -138,16 +143,10 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
     }
 
 
-    AVMUser mUser = null;
+
     private void createActToNet() {
 
         //必要检查
-
-         mUser = (AVMUser) AVUser.getCurrentUser();
-        if(null == mUser) {
-            login();
-            return;
-        }
 
         mAVAcitivity.saveInBackground(new SaveCallback() {
             @Override
@@ -157,7 +156,7 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
                     ToastUtil.toastShort(CreateTravelActivity.this,"创建失败");
                     return;
                 }
-                
+
                 mUser.getCreateTravelActivitysRelation().add(mAVAcitivity);
                 mUser.getJoinedTravelActivitysRelation().add(mAVAcitivity);
                 mUser.saveInBackground(new SaveCallback() {

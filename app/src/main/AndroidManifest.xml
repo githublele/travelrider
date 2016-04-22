@@ -86,12 +86,8 @@
         <activity android:name="cn.nono.ridertravel.ui.diary.DiaryPreviewActivity" >
         </activity>
         <activity android:name="cn.nono.ridertravel.ui.diary.DiaryBrowseActivity"></activity>
-        <activity android:name="cn.nono.ridertravel.ui.travelact.CreateTravelActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".ui.travelact.CreateTravelActivity">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
 
@@ -105,6 +101,15 @@
 <activity android:name="cn.nono.ridertravel.ui.baidumap.TravelMapPathActivity">
 
     </activity>
+<activity android:name="cn.nono.ridertravel.ui.travelact.TravelActivityBrowseActivity">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+</activity>
+
+<activity android:name="cn.nono.ridertravel.ui.baidumap.MapPathActivity"></activity>
 
 
 
@@ -115,7 +120,11 @@
         </activity>
 
         <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
-        </service>
+        </service><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
     </application>
 

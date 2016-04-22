@@ -40,4 +40,5 @@ dependencies {
     compile project(':timeselector')
     compile files('libs/BaiduLBS_Android.jar')
     compile files('libs/baidumapapi_search_v3_7_3.jar')
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
 }

@@ -26,10 +26,15 @@ public class BaseNoTitleActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(LOGIN_REQ_CODE == requestCode) {
-			onLoginActivityResult(resultCode,data)	;
+			onLoginActivityResult(resultCode,data);
 		}
 	}
 
+	/**
+	 * 登录成功重写该方法
+	 * @param resultCode
+	 * @param data
+     */
 	protected void onLoginActivityResult(int resultCode, Intent data) {
 
 	}
