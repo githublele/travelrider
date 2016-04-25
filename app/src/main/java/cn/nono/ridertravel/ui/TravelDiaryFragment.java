@@ -90,13 +90,6 @@ public final class TravelDiaryFragment extends Fragment {
 	}
 
 	@Override
-	public void onDetach() {
-		mRequestQueue.start();
-		mRequestQueue = null;
-		super.onDetach();
-	}
-
-	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -238,6 +231,8 @@ public final class TravelDiaryFragment extends Fragment {
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
+		mRequestQueue.start();
+		mRequestQueue = null;
 		super.onDestroy();
 	}
 

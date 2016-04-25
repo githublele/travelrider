@@ -10,10 +10,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.LogInCallback;
 
+import java.util.List;
+
 import cn.nono.ridertravel.R;
+import cn.nono.ridertravel.RiderTravelApplication;
+import cn.nono.ridertravel.bean.av.AVBaseUserInfo;
 import cn.nono.ridertravel.debug.ToastUtil;
 import cn.nono.ridertravel.ui.base.BaseNoTitleActivity;
 import cn.nono.ridertravel.util.MStringUtil;
@@ -89,13 +95,32 @@ public class LoginActivity extends BaseNoTitleActivity implements OnClickListene
 			@Override
 			public void done(AVUser avUser, AVException arg0) {
 				// TODO Auto-generated method stub
-				progressDlg.dismiss();
 				if(null != arg0) {
 					ToastUtil.toastShort(LoginActivity.this,arg0.getMessage());
+					progressDlg.dismiss();
+					return;
 				} else {
-					ToastUtil.toastShort(LoginActivity.this, "登陆成功");
-					setResult(RESULT_OK);
-					finish();
+					AVQuery<AVBaseUserInfo> query = AVQuery.getQuery(AVBaseUserInfo.class);
+					query.whereEqualTo(AVBaseUserInfo.USER_POINTER_KEY,avUser.getObjectId());
+					query.findInBackground(new FindCallback<AVBaseUserInfo>() {
+						@Override
+						public void done(List<AVBaseUserInfo> list, AVException e) {
+							if(null != e ) {
+								progressDlg.dismiss();
+								return;
+							}
+
+							if(null != list && list.size() == 1) {
+								((RiderTravelApplication)getApplication()).updateUserBaseInfo(list.get(0));
+								ToastUtil.toastShort(LoginActivity.this, "登陆成功");
+								setResult(RESULT_OK);
+								progressDlg.dismiss();
+								finish();
+								return;
+							}
+							progressDlg.dismiss();
+						}
+					});
 				}
 			}
 		});

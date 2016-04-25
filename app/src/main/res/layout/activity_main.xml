@@ -18,35 +18,34 @@
             android:layout_height="60dp"
             android:orientation="horizontal"
             >
-            <RadioGroup 
+            <RadioGroup
+                android:id="@+id/navigation_radioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 >
                 <RadioButton 
-                    android:id="@+id/diary"
+                    android:id="@+id/diary_radioBtn"
                     android:layout_height="match_parent"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:text="游记"
                     />
                 <RadioButton 
-                   android:id="@+id/discovery"
+                   android:id="@+id/activity_radioBtn"
                     android:layout_height="match_parent"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:text="发现"
-                    />
+                    android:text="活动"
+                    android:checked="false" />
                 <RadioButton 
-                    android:id="@+id/record"
+                    android:id="@+id/record_radioBtn"
                     android:layout_height="match_parent"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:text="我的里程"
                     />
           
-                
-                
             </RadioGroup>
             
             

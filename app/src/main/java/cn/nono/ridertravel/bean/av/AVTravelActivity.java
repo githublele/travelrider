@@ -24,6 +24,8 @@ public class AVTravelActivity extends AVObject{
     private final static String PHONE_KEY = "phone";
     private final static String ACTIVITY_STATE_KEY = "activityState";
     private final static String PARTICIPATORS_RELATIONS_KEY = "participators";
+    public final static String ISSUER_POINTER_KEY ="issuer";
+    public final static String ISSUER_BASE_INFO_POINTER_KEY ="issuerBaseInfoPointer";
 
 
     private final  static String TAVLE_MAP_PATH_KEY = "travelMapPath";
@@ -41,6 +43,21 @@ public class AVTravelActivity extends AVObject{
 //    String  phone;
 //    Integer activityState;
 
+    public AVBaseUserInfo getIsserBaseInfo() {
+        return getAVObject(ISSUER_BASE_INFO_POINTER_KEY);
+    }
+
+    public void setBaseUserInfo(AVBaseUserInfo avBaseUserInfo) {
+         put(ISSUER_BASE_INFO_POINTER_KEY,avBaseUserInfo);
+    }
+
+    public AVMUser getIssuer() {
+            return getAVObject(ISSUER_POINTER_KEY);
+    }
+
+    public void setIssuer(AVMUser avmUser) {
+        put(ISSUER_POINTER_KEY,avmUser);
+    }
 
     public AVTravelMapPath getMapPath() {
         return getAVObject(TAVLE_MAP_PATH_KEY);

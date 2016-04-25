@@ -10,10 +10,12 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.SignUpCallback;
 
 import cn.nono.ridertravel.R;
+import cn.nono.ridertravel.bean.av.AVBaseUserInfo;
+import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.debug.ToastUtil;
 import cn.nono.ridertravel.ui.base.BaseNoTitleActivity;
 import cn.nono.ridertravel.util.MStringUtil;
@@ -44,7 +46,8 @@ public class RegistActivity extends BaseNoTitleActivity implements OnClickListen
 	}
 
 
-	private AVUser avUser = null;
+	private AVMUser avUser = null;
+	private AVBaseUserInfo baseUserInfo = null;
 
 
 
@@ -52,7 +55,8 @@ public class RegistActivity extends BaseNoTitleActivity implements OnClickListen
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		avUser = new AVUser();
+		avUser = new AVMUser();
+		baseUserInfo = new AVBaseUserInfo();
 		String nickName = nickNameEditText.getText().toString();
 		String account  = accountEditText.getText().toString();
 		String password = passwordEditText.getText().toString();
@@ -62,14 +66,13 @@ public class RegistActivity extends BaseNoTitleActivity implements OnClickListen
 		} else {
 			sex = "女";
 		}
-		avUser.put("sex", sex);
+		baseUserInfo.setSex(sex);
 
 		if(MStringUtil.isNullEmptyTrim(nickName)) {
 			Toast.makeText(this, "昵称不能为空",Toast.LENGTH_SHORT).show();
-			avUser = null;
 			return;
 		}
-		avUser.put("nickName", nickName);
+		baseUserInfo.setNickName(nickName);
 
 		if(MStringUtil.isNullEmptyTrim(account)) {
 			Toast.makeText(this, "账号不能为空",Toast.LENGTH_SHORT).show();
@@ -101,12 +104,46 @@ public class RegistActivity extends BaseNoTitleActivity implements OnClickListen
 			@Override
 			public void done(AVException arg0) {
 				// TODO Auto-generated method stub
-				progressDlg.dismiss();
 				if(null != arg0) {
 					ToastUtil.toastShort(RegistActivity.this,arg0.getMessage());
+					progressDlg.dismiss();
 				} else {
+					baseUserInfo.setUser(avUser);
+					baseUserInfo.saveInBackground(new SaveCallback() {
+						@Override
+						public void done(AVException e) {
+							if(null != e) {
+								ToastUtil.toastShort(RegistActivity.this,e.getMessage());
+								avUser.deleteInBackground();
+								progressDlg.dismiss();
+								return;
+							}
+
+							avUser.setBaseInfo(baseUserInfo);
+							avUser.saveInBackground(new SaveCallback() {
+								@Override
+								public void done(AVException e) {
+									if(null != e) {
+										baseUserInfo.deleteInBackground();
+										avUser.deleteInBackground();
+										ToastUtil.toastShort(RegistActivity.this,e.getMessage());
+										progressDlg.dismiss();
+										return;
+									}
+									progressDlg.dismiss();
+									ToastUtil.toastShort(RegistActivity.this, "注册成功");
+								}
+							});
+
+
+						}
+					});
 					ToastUtil.toastShort(RegistActivity.this, "注册成功");
 				}
+
+
+
+
 			}
 		});
 

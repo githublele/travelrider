@@ -1,5 +1,6 @@
 package cn.nono.ridertravel.ui.travelact;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -7,7 +8,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 
 import org.feezu.liuli.timeselector.TimeSelector;
@@ -15,8 +18,11 @@ import org.feezu.liuli.timeselector.TimeSelector;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import cn.nono.ridertravel.R;
+import cn.nono.ridertravel.RiderTravelApplication;
+import cn.nono.ridertravel.bean.av.AVBaseUserInfo;
 import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.bean.av.AVTravelActivity;
 import cn.nono.ridertravel.bean.av.AVTravelMapPath;
@@ -53,19 +59,62 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
 
     AVTravelActivity mAVAcitivity = new AVTravelActivity();
     AVMUser mUser = null;
+    AVBaseUserInfo mUserBaseInfo = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_travel_activity);
+        setContentView(R.layout.activity_travel_act_create);
         //登录拦截。
         mUser = (AVMUser) AVUser.getCurrentUser(AVMUser.class);
         if (mUser == null) {
             login();
             finish();
+            return;
         }
+        mAVAcitivity.setIssuer(mUser);
 
         initView();
+
+        mUserBaseInfo = ((RiderTravelApplication)getApplication()).getUserBaseInfo();
+        if(null == mUserBaseInfo) {
+            loadUserBaseInfoDate();
+        }
+
+
+    }
+
+    ProgressDialog progressDlg = null;
+    private void loadUserBaseInfoDate() {
+        progressDlg = new ProgressDialog(this);
+        progressDlg.setMessage("连接服务器...");
+        progressDlg.show();
+
+        AVQuery<AVBaseUserInfo> query = AVQuery.getQuery(AVBaseUserInfo.class);
+        query.whereEqualTo(AVBaseUserInfo.USER_POINTER_KEY,mUser.getObjectId());
+        query.findInBackground(new FindCallback<AVBaseUserInfo>() {
+            @Override
+            public void done(List<AVBaseUserInfo> list, AVException e) {
+                if(null != e ) {
+                    progressDlg.dismiss();
+                    ToastUtil.toastShort(CreateTravelActivity.this, "连接失败");
+                    finish();
+                    return;
+                }
+
+                if(null != list && list.size() == 1) {
+                    ((RiderTravelApplication)getApplication()).updateUserBaseInfo(list.get(0));
+                    ToastUtil.toastShort(CreateTravelActivity.this, "连接成功");
+                    mUserBaseInfo = list.get(0);
+                    progressDlg.dismiss();
+                    creatorTextView.setText(mUserBaseInfo.getNickname());
+                    return;
+                }
+                progressDlg.dismiss();
+                ToastUtil.toastShort(CreateTravelActivity.this, "连接失败");
+                finish();
+            }
+        });
     }
 
     private void initView() {
@@ -148,6 +197,7 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
 
         //必要检查
 
+        mAVAcitivity.setBaseUserInfo(mUserBaseInfo);
         mAVAcitivity.saveInBackground(new SaveCallback() {
             @Override
             public void done(AVException e) {

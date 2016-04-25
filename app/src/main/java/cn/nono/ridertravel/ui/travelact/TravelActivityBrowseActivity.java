@@ -12,6 +12,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
@@ -30,6 +31,7 @@ import cn.nono.ridertravel.bean.av.AVTravelMapPath;
 import cn.nono.ridertravel.debug.ToastUtil;
 import cn.nono.ridertravel.ui.baidumap.MapPathActivity;
 import cn.nono.ridertravel.ui.base.BaseNoTitleActivity;
+import cn.nono.ridertravel.util.SimpleDateUtil;
 
 /**
  * Created by Administrator on 2016/4/22.
@@ -66,7 +68,12 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
     BaseAdapter mSomeCommentAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
-            return 0;
+            int count = 0;
+            if(count <= 0)
+                showNoCommemtTipsView();
+            else
+                hideNoCommemtTipsView();
+            return count;
         }
 
         @Override
@@ -85,6 +92,9 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
         }
     };
 
+
+
+    private ScrollView mScrollView;
     private ImageView mActThumbnailMapImageView;
     private TextView mActStateTextView;
     private TextView mCityTextView;
@@ -96,45 +106,78 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
     private TextView mActIntroductionTextView;
     private GridView mSomeUserGridView;
     private ListView mSomeCommemtListView;
+    private TextView mNoCommemtTipsTextView;
+
     private Button mBackBtn;
     private Button mJoinActBtn;
     private Button mAddCommemtBtn;
 
+    private LinearLayout mBottomBtnsLinearLayout;
+
+    private LinearLayout mCommemtLinearLayout;
+    private EditText mCommemtEditText;
+    private Button mUploadCommemtBtn;
+
+
     private AVTravelActivity mTravelAct;
     private AVMUser mUser = null;
-    private LinearLayout mBottomBtnsLinearLayout;
-    private LinearLayout mCommemtLinearLayout;
+    private boolean mNoCommemtTipsVisible = false;
+    private boolean mCommemtLinearLayoutVisible = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_activity_browser);
-//        mTravelAct = getIntent().getParcelableExtra(AV_TRAVEL_ACT_KEY);
-//        if (mTravelAct == null) {
-//            finish();
-//            return;
-//        }
+        setContentView(R.layout.activity_act_browser);
+        mTravelAct = getIntent().getParcelableExtra(AV_TRAVEL_ACT_KEY);
+        if (mTravelAct == null) {
+            finish();
+            return;
+        }
         initView();
+        loadNetDate();
+
+    }
+
+    //加载其余的网络数据
+    private void loadNetDate() {
 
     }
 
     private void initView() {
 
+        mScrollView = (ScrollView) findViewById(R.id.content_scrollView);
+        mScrollView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    hideCommemtEditView();
+            }
+        });
+        
         mActThumbnailMapImageView = (ImageView) findViewById(R.id.map_thumbnail_imageview);
         mActThumbnailMapImageView.setOnClickListener(this);
         mActStateTextView = (TextView) findViewById(R.id.activity_state_tv);
+
         mCityTextView = (TextView) findViewById(R.id.city_tv);
+        mCityTextView.setText("默认城市 T");
+
         mActStarDateTextView = (TextView) findViewById(R.id.activity_start_date_tv);
+        mActStarDateTextView.setText(SimpleDateUtil.formatDate(SimpleDateUtil.YMDHMS,mTravelAct.getStartDateMillisTime()));
         mActEndDateTextView = (TextView) findViewById(R.id.activity_end_date_tv);
+        mActEndDateTextView.setText(SimpleDateUtil.formatDate(SimpleDateUtil.YMDHMS,mTravelAct.getEndDateMillisTime()));
+
         mPhoneTextView = (TextView) findViewById(R.id.phone_tv);
+        mPhoneTextView.setText(mTravelAct.getPhone());
         mIssuerTextView = (TextView) findViewById(R.id.issuer_tv);
         mFallInPlaceTextView = (TextView) findViewById(R.id.fall_in_place_tv);
+        mFallInPlaceTextView.setText(mTravelAct.getFallInPlace());
         mActIntroductionTextView = (TextView) findViewById(R.id.activity_introduction_tv);
+        mActIntroductionTextView.setText(mTravelAct.getActivityIntroduce());
         mSomeUserGridView = (GridView) findViewById(R.id.user_list_gridview);
-//        mSomeUserGridView.setAdapter(mSomeUsersAdapter);
+        mSomeUserGridView.setAdapter(mSomeUsersAdapter);
+        mNoCommemtTipsTextView = (TextView) findViewById(R.id.tips_no_commemt_tv);
         mSomeCommemtListView = (ListView) findViewById(R.id.commemt_listview);
-//        mSomeCommemtListView.setAdapter(mSomeCommentAdapter);
+        mSomeCommemtListView.setAdapter(mSomeCommentAdapter);
         mBackBtn = (Button) findViewById(R.id.back_btn);
         mBackBtn.setOnClickListener(this);
         mJoinActBtn = (Button) findViewById(R.id.join_activity_btn);
@@ -143,8 +186,13 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
         mAddCommemtBtn.setOnClickListener(this);
 
         mBottomBtnsLinearLayout = (LinearLayout) findViewById(R.id.bottom_btns_ll);
+        mCommemtEditText = (EditText) findViewById(R.id.comment_edittext);
         mCommemtLinearLayout = (LinearLayout) findViewById(R.id.commemt_ll);
+
+        mUploadCommemtBtn = (Button) findViewById(R.id.add_commemt_btn);
+        mUploadCommemtBtn.setOnClickListener(this);
     }
+
 
     @Override
     public void onClick(View v) {
@@ -159,7 +207,10 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
                 joinAct();
                 break;
             case R.id.comment_btn:
-                addCommemt();
+                showCommemtEditView();
+                break;
+            case R.id.add_commemt_btn:
+                uploadCommemt();
                 break;
             default:
                 break;
@@ -167,40 +218,40 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
 
     }
 
-    EditText commemtEditText;
-    Button addBtn;
-    View contentView = null;
+    private void uploadCommemt() {
+    }
 
-    private void addCommemt() {
-/*
-        if (contentView == null) {
-            contentView = LayoutInflater.from(this).inflate(R.layout.popu_window_add_commemt, null);
-            commemtEditText = (EditText) contentView.findViewById(R.id.comment_edittext);
-            addBtn = (Button) contentView.findViewById(R.id.add_commemt_btn);
-            addBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ToastUtil.toastShort(TravelActivityBrowseActivity.this, commemtEditText.getText().toString());
-                }
-            });
-        }
 
-        PopupWindow popupWindow = new PopupWindow(contentView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
-        popupWindow.setTouchable(true);
-        popupWindow.setTouchInterceptor(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.i("xx", "onTouch: ");
-                return false;
-            }
-        });
+    private void showCommemtEditView() {
+        if(mCommemtLinearLayoutVisible)
+            return;
 
-        popupWindow.setBackgroundDrawable(new ColorDrawable(0xfff8f8f8));
-        popupWindow.showAtLocation(getWindow().getDecorView().findViewById(android.R.id.content), Gravity.BOTTOM,0,0);
-   */
-
+        mCommemtEditText.setText("");
         mBottomBtnsLinearLayout.setVisibility(View.GONE);
         mCommemtLinearLayout.setVisibility(View.VISIBLE);
+        mCommemtLinearLayoutVisible = true;
+    }
+
+    private void hideCommemtEditView() {
+        if (mCommemtLinearLayoutVisible) {
+            mCommemtLinearLayout.setVisibility(View.GONE);
+            mBottomBtnsLinearLayout.setVisibility(View.VISIBLE);
+            mCommemtLinearLayoutVisible = false;
+        }
+    }
+
+    private void showNoCommemtTipsView() {
+      if(mNoCommemtTipsVisible)
+          return;
+        mNoCommemtTipsTextView.setVisibility(View.VISIBLE);
+        mNoCommemtTipsVisible = true;
+    }
+
+    private void hideNoCommemtTipsView() {
+        if(mNoCommemtTipsVisible) {
+            mNoCommemtTipsTextView.setVisibility(View.GONE);
+            mNoCommemtTipsVisible = false;
+        }
     }
 
     private void joinAct() {
