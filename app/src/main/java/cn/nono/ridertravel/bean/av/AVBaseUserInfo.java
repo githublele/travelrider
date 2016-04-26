@@ -9,7 +9,7 @@ import com.avos.avoscloud.AVObject;
 @AVClassName("UserBaseInfo")
 public class AVBaseUserInfo extends AVObject {
     public final static String NICKNAME_KEY = "nickName";
-    public final static String USER_POINTER_KEY = "userPointer";
+//    public final static String USER_POINTER_KEY = "userPointer";
     public final static String SEX_KEY = "sex";
 
     public void setNickName(String nickName) {
@@ -28,13 +28,13 @@ public class AVBaseUserInfo extends AVObject {
         return getString(SEX_KEY);
     }
 
-    public AVMUser getUser() {
-        return getAVObject(USER_POINTER_KEY);
-    }
-
-    public void setUser(AVMUser avmUser) {
-        put(USER_POINTER_KEY,avmUser);
-    }
+//    public AVMUser getUser() {
+//        return getAVObject(USER_POINTER_KEY);
+//    }
+//
+//    public void setUser(AVMUser avmUser) {
+//        put(USER_POINTER_KEY,avmUser);
+//    }
 
 
 

@@ -21,7 +21,6 @@ public class MainActivity extends BaseNoTitleFragmentActivity implements RadioGr
 	private TravelRecordFragment mTravelRecordFragment = null;
 	private Fragment mCurrentShowFragment = null;
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,15 +29,6 @@ public class MainActivity extends BaseNoTitleFragmentActivity implements RadioGr
 		mNavigationRedioGroup = (RadioGroup) findViewById(R.id.navigation_radioGroup);
 		mNavigationRedioGroup.setOnCheckedChangeListener(this);
 
-
-
-
-		/*
-		if(null == mDiaryFragemt)
-			mDiaryFragemt = new TravelDiaryFragment();
-		//暂时这样
-		getSupportFragmentManager().beginTransaction().add(R.id.content, mDiaryFragemt).show(mDiaryFragemt).commit();
-		*/
 		mNavigationRedioGroup.check(R.id.diary_radioBtn);
 
 	}

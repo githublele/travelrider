@@ -32,6 +32,8 @@ public class RiderTravelApplication extends Application {
 		AVObject.registerSubclass(AVTravelMapPath.class);
 		AVObject.registerSubclass(AVTravelActivity.class);
 		AVObject.registerSubclass(AVBaseUserInfo.class);
+
+
 		AVOSCloud.isDebugLogEnabled();
 		AVOSCloud.initialize(this, "znwHiaY89nTixY6q6qHucyvl-gzGzoHsz", "moGC4z10Dwbz8CjzTbgT150l");
 

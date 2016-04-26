@@ -14,6 +14,7 @@ import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.SignUpCallback;
 
 import cn.nono.ridertravel.R;
+import cn.nono.ridertravel.RiderTravelApplication;
 import cn.nono.ridertravel.bean.av.AVBaseUserInfo;
 import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.debug.ToastUtil;
@@ -99,53 +100,49 @@ public class RegistActivity extends BaseNoTitleActivity implements OnClickListen
 			progressDlg = new ProgressDialog(this);
 		progressDlg.setMessage("注册。。。");
 		progressDlg.show();
-		avUser.signUpInBackground(new SignUpCallback() {
 
+		baseUserInfo.saveInBackground(new SaveCallback() {
 			@Override
-			public void done(AVException arg0) {
-				// TODO Auto-generated method stub
-				if(null != arg0) {
-					ToastUtil.toastShort(RegistActivity.this,arg0.getMessage());
+			public void done(AVException e) {
+				if(null != e) {
+					ToastUtil.toastShort(RegistActivity.this,e.getMessage());
+					avUser.deleteInBackground();
 					progressDlg.dismiss();
-				} else {
-					baseUserInfo.setUser(avUser);
-					baseUserInfo.saveInBackground(new SaveCallback() {
-						@Override
-						public void done(AVException e) {
-							if(null != e) {
-								ToastUtil.toastShort(RegistActivity.this,e.getMessage());
-								avUser.deleteInBackground();
-								progressDlg.dismiss();
-								return;
-							}
-
-							avUser.setBaseInfo(baseUserInfo);
-							avUser.saveInBackground(new SaveCallback() {
-								@Override
-								public void done(AVException e) {
-									if(null != e) {
-										baseUserInfo.deleteInBackground();
-										avUser.deleteInBackground();
-										ToastUtil.toastShort(RegistActivity.this,e.getMessage());
-										progressDlg.dismiss();
-										return;
-									}
-									progressDlg.dismiss();
-									ToastUtil.toastShort(RegistActivity.this, "注册成功");
-								}
-							});
-
-
-						}
-					});
-					ToastUtil.toastShort(RegistActivity.this, "注册成功");
+					return;
 				}
+				avUser.setBaseInfo(baseUserInfo);
+				avUser.signUpInBackground(new SignUpCallback() {
+					@Override
+					public void done(AVException e) {
+						if(null != e) {
+							ToastUtil.toastShort(RegistActivity.this,e.getMessage());
+							progressDlg.dismiss();
+							return;
+						}
 
+						avUser.setBaseInfo(baseUserInfo);
+						avUser.signUpInBackground(new SignUpCallback() {
+							@Override
+							public void done(AVException e) {
+								progressDlg.dismiss();
+								if(null == e) {
+									ToastUtil.toastShort(RegistActivity.this, "注册成功");
+									((RiderTravelApplication)getApplication()).updateUserBaseInfo(baseUserInfo);
+									finish();
+									return;
+								}
+								else {
+									baseUserInfo.deleteInBackground();
+									ToastUtil.toastShort(RegistActivity.this, "注册失败");
+								}
+							}
+						});
 
-
-
+					}
+				});
 			}
 		});
+
 
 	}
 

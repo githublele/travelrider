@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.nono.ridertravel.R;
-import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.bean.av.AVTravelActivity;
 import cn.nono.ridertravel.debug.ToastUtil;
 import cn.nono.ridertravel.util.SimpleDateUtil;
@@ -80,8 +79,6 @@ public class TravelActivityFragment extends Fragment implements View.OnClickList
             viewHolder.actIssuerTextView.setText(avTravelActivity.getIsserBaseInfo().getNickname());
             viewHolder.actFallInPlaceTextView.setText(avTravelActivity.getFallInPlace());
 
-            AVMUser avmUser = avTravelActivity.getIssuer();
-            Log.i("xx",avmUser.getString("sex"));
             return convertView;
         }
     };
@@ -110,6 +107,15 @@ public class TravelActivityFragment extends Fragment implements View.OnClickList
        mCreateActBtn.setOnClickListener(this);
        mTravelActsListView = (ListView) view.findViewById(R.id.activity_list_listview);
        mTravelActsListView.setAdapter(mListAdapter);
+       mTravelActsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+           @Override
+           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               AVTravelActivity act = mTravelActivities.get(position);
+               Intent intent = new Intent(getActivity(),TravelActivityBrowseActivity.class);
+               intent.putExtra(TravelActivityBrowseActivity.AV_TRAVEL_ACT_KEY,act);
+               startActivity(intent);
+           }
+       });
     }
 
 

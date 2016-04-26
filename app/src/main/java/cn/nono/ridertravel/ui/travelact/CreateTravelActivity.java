@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 
 import org.feezu.liuli.timeselector.TimeSelector;
@@ -18,7 +18,6 @@ import org.feezu.liuli.timeselector.TimeSelector;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import cn.nono.ridertravel.R;
 import cn.nono.ridertravel.RiderTravelApplication;
@@ -79,6 +78,9 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
         mUserBaseInfo = ((RiderTravelApplication)getApplication()).getUserBaseInfo();
         if(null == mUserBaseInfo) {
             loadUserBaseInfoDate();
+        } else {
+            mAVAcitivity.setBaseUserInfo(mUserBaseInfo);
+            creatorTextView.setText(mUserBaseInfo.getNickname());
         }
 
 
@@ -91,30 +93,25 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
         progressDlg.show();
 
         AVQuery<AVBaseUserInfo> query = AVQuery.getQuery(AVBaseUserInfo.class);
-        query.whereEqualTo(AVBaseUserInfo.USER_POINTER_KEY,mUser.getObjectId());
-        query.findInBackground(new FindCallback<AVBaseUserInfo>() {
+        query.getInBackground(mUser.getBaseInfo().getObjectId(), new GetCallback<AVBaseUserInfo>() {
             @Override
-            public void done(List<AVBaseUserInfo> list, AVException e) {
-                if(null != e ) {
+            public void done(AVBaseUserInfo avBaseUserInfo, AVException e) {
+                if(null != e) {
                     progressDlg.dismiss();
                     ToastUtil.toastShort(CreateTravelActivity.this, "连接失败");
                     finish();
                     return;
-                }
-
-                if(null != list && list.size() == 1) {
-                    ((RiderTravelApplication)getApplication()).updateUserBaseInfo(list.get(0));
+                } else {
+                    ((RiderTravelApplication)getApplication()).updateUserBaseInfo(avBaseUserInfo);
                     ToastUtil.toastShort(CreateTravelActivity.this, "连接成功");
-                    mUserBaseInfo = list.get(0);
+                    mUserBaseInfo = avBaseUserInfo;
                     progressDlg.dismiss();
                     creatorTextView.setText(mUserBaseInfo.getNickname());
                     return;
                 }
-                progressDlg.dismiss();
-                ToastUtil.toastShort(CreateTravelActivity.this, "连接失败");
-                finish();
             }
         });
+
     }
 
     private void initView() {
@@ -213,6 +210,8 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
                     @Override
                     public void done(AVException e) {
                         ToastUtil.toastShort(CreateTravelActivity.this,"succession");
+                        setResult(RESULT_OK);
+                        finish();
                     }
                 });
                 ;
