@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVACL;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.SignUpCallback;
@@ -120,6 +121,12 @@ public class RegistActivity extends BaseNoTitleActivity implements OnClickListen
 							return;
 						}
 
+						AVACL avacl = new AVACL();
+						avacl.setPublicReadAccess(true);
+						avacl.setWriteAccess(avUser,true);
+						baseUserInfo.setACL(avacl);
+						baseUserInfo.saveInBackground();
+						avUser.setACL(avacl);
 						avUser.setBaseInfo(baseUserInfo);
 						avUser.signUpInBackground(new SignUpCallback() {
 							@Override

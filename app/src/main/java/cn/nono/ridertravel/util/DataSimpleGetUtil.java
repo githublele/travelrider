@@ -43,4 +43,5 @@ public class DataSimpleGetUtil {
 		return str;
 	}
 
+
 }

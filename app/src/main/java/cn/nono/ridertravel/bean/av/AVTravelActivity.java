@@ -23,9 +23,16 @@ public class AVTravelActivity extends AVObject{
     private final static String REGISTRATION_DEADLINE_KEY = "registrationDeadlineMillisTime";
     private final static String PHONE_KEY = "phone";
     private final static String ACTIVITY_STATE_KEY = "activityState";
-    private final static String PARTICIPATORS_RELATIONS_KEY = "participators";
+    /**
+     * 参加的人
+     */
+    public final static String PARTICIPATORS_BASE_INFO_RELATIONS_KEY = "participatorsBaseInfo";
+    public final static String COMMEMT_RELATIONS_KEY = "commemts";
+
     public final static String ISSUER_POINTER_KEY ="issuer";
     public final static String ISSUER_BASE_INFO_POINTER_KEY ="issuerBaseInfoPointer";
+
+
 
 
     private final  static String TAVLE_MAP_PATH_KEY = "travelMapPath";
@@ -76,8 +83,10 @@ public class AVTravelActivity extends AVObject{
         return getLong(REGISTRATION_DEADLINE_KEY);
     }
 
-    public AVRelation<AVMUser> getParticipators() {
-        return getRelation(PARTICIPATORS_RELATIONS_KEY);
+
+
+    public AVRelation<AVBaseUserInfo> getParticipatorsBaseInfo() {
+        return getRelation(PARTICIPATORS_BASE_INFO_RELATIONS_KEY);
     }
 
     public Integer getActivityState() {

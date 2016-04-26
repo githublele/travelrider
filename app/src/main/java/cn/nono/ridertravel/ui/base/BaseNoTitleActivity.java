@@ -1,14 +1,58 @@
 package cn.nono.ridertravel.ui.base;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 
+import cn.nono.ridertravel.RiderTravelApplication;
+import cn.nono.ridertravel.bean.av.AVBaseUserInfo;
 import cn.nono.ridertravel.ui.LoginActivity;
 
 public class BaseNoTitleActivity extends Activity {
 	private static final int LOGIN_REQ_CODE = 99999;
+
+	private ProgressDialog mProgDlg = null;
+	protected ProgressDialog progressDialogCreate() {
+		ProgressDialog dlg = new ProgressDialog(this);
+		dlg.setMessage("数据加载中");
+		dlg.setCancelable(false);
+		return dlg;
+	}
+
+	protected void showProgressDialg() {
+		showProgressDialg(null);
+	}
+
+	protected void showProgressDialg(String dlgMsg) {
+		if(null == mProgDlg) {
+			mProgDlg = progressDialogCreate();
+		}
+		if(mProgDlg.isShowing())
+			return;
+		if(null == dlgMsg)
+			mProgDlg.setMessage("数据加载中");
+		else
+			mProgDlg.setMessage(dlgMsg);
+
+		mProgDlg.show();
+	}
+
+	protected void hideProgressDialg() {
+		if(null == mProgDlg)
+			return;
+		if(mProgDlg.isShowing())
+			mProgDlg.dismiss();
+	}
+
+	protected AVBaseUserInfo getAplicationBaseUserInfoCache() {
+		return ((RiderTravelApplication)getApplication()).getUserBaseInfo();
+	}
+
+	protected void updateAplicationBaseUserInfoCache(AVBaseUserInfo avBaseUserInfo) {
+		((RiderTravelApplication)getApplication()).updateUserBaseInfo(avBaseUserInfo);
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

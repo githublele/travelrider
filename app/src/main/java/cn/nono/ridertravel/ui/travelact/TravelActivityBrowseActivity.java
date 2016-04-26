@@ -2,6 +2,8 @@ package cn.nono.ridertravel.ui.travelact;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,22 +17,29 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVACL;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVGeoPoint;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.baidu.mapapi.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.nono.ridertravel.R;
+import cn.nono.ridertravel.bean.av.AVBaseUserInfo;
+import cn.nono.ridertravel.bean.av.AVComment;
 import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.bean.av.AVTravelActivity;
 import cn.nono.ridertravel.bean.av.AVTravelMapPath;
 import cn.nono.ridertravel.debug.ToastUtil;
 import cn.nono.ridertravel.ui.baidumap.MapPathActivity;
 import cn.nono.ridertravel.ui.base.BaseNoTitleActivity;
+import cn.nono.ridertravel.util.DataSimpleGetUtil;
 import cn.nono.ridertravel.util.SimpleDateUtil;
 
 /**
@@ -40,15 +49,19 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
 
     public static final String AV_TRAVEL_ACT_KEY = "AV_ACT";
 
+    //代表（仅仅获取部分参加人员信息）
+    private List<AVBaseUserInfo> simpleJoinUsers = new ArrayList<AVBaseUserInfo>();
+    private List<AVComment> simpleCommemts = new ArrayList<AVComment>();
+
     BaseAdapter mSomeUsersAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
-            return 4;
+            return simpleJoinUsers.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return null;
+            return simpleJoinUsers.get(position);
         }
 
         @Override
@@ -58,17 +71,31 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = LayoutInflater.from(TravelActivityBrowseActivity.this).inflate(android.R.layout.simple_list_item_1, null);
-            TextView textView = (TextView) convertView.findViewById(android.R.id.text1);
-            textView.setText("xxx" + position);
+            AVBaseUserInfo avBaseUserInfo = simpleJoinUsers.get(position);
+            ViewHolderSomeUser viewHolder;
+            if(null == convertView) {
+                viewHolder = new ViewHolderSomeUser();
+                convertView = LayoutInflater.from(TravelActivityBrowseActivity.this).inflate(R.layout.item_act_participators_list, null);
+                viewHolder.headIconImgeView = (ImageView) convertView.findViewById(R.id.head_icon_imageview);
+                convertView.setTag(viewHolder);
+            }
+            viewHolder = (ViewHolderSomeUser) convertView.getTag();
+            //头像填充
+//            ....
+
+
             return convertView;
         }
     };
 
+    class ViewHolderSomeUser {
+        public ImageView  headIconImgeView;
+    }
+
     BaseAdapter mSomeCommentAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
-            int count = 0;
+            int count = simpleCommemts.size();
             if(count <= 0)
                 showNoCommemtTipsView();
             else
@@ -78,21 +105,47 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
 
         @Override
         public Object getItem(int position) {
-            return null;
+            return simpleCommemts.get(position);
         }
 
         @Override
         public long getItemId(int position) {
-            return 0;
+            return position;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            return null;
+            ViewHolderCommemt viewHolder;
+            AVComment avComment = simpleCommemts.get(position);
+            if(null == convertView) {
+                convertView = LayoutInflater.from(TravelActivityBrowseActivity.this).inflate(R.layout.item_comment_list,null);
+                viewHolder = new ViewHolderCommemt();
+                viewHolder.headIconImgeView = (ImageView) convertView.findViewById(R.id.head_icon_imageview);
+                viewHolder.nickNameTextView = (TextView) convertView.findViewById(R.id.nickname_tv);
+                viewHolder.commentCreatTimeTextView = (TextView) convertView.findViewById(R.id.comment_create_time_tv);
+                viewHolder.commentContentTextView = (TextView) convertView.findViewById(R.id.comment_content_tv);
+                convertView.setTag(viewHolder);
+            }
+
+            viewHolder = (ViewHolderCommemt) convertView.getTag();
+            AVBaseUserInfo baseUserInfo = avComment.getUserBaseInfo();
+            if(null != baseUserInfo) {
+                viewHolder.nickNameTextView.setText(baseUserInfo.getNickname());
+                //touxian
+
+            }
+            viewHolder.commentCreatTimeTextView.setText(SimpleDateUtil.formatDateMDHM(avComment.getCreatedAt().getTime()));
+            viewHolder.commentContentTextView.setText(avComment.getContent());
+            return convertView;
         }
     };
 
-
+class ViewHolderCommemt {
+    public ImageView  headIconImgeView;
+    public TextView commentContentTextView;
+    public TextView nickNameTextView;
+    public TextView commentCreatTimeTextView;
+}
 
     private ScrollView mScrollView;
     private ImageView mActThumbnailMapImageView;
@@ -139,9 +192,66 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
 
     }
 
+
+    private int mLoadNetDateFlag = 0;
+    Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    if(mLoadNetDateFlag == 0)
+                        mLoadNetDateFlag++;
+                    else
+                        ToastUtil.toastShort(TravelActivityBrowseActivity.this,"拉取数据完毕");
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
     //加载其余的网络数据
     private void loadNetDate() {
+        mLoadNetDateFlag = 0;
+        mTravelAct.getParticipatorsBaseInfo().getQuery()
+                .setLimit(5).findInBackground(new FindCallback<AVBaseUserInfo>() {
+            @Override
+            public void done(List<AVBaseUserInfo> list, AVException e) {
+                if (null != e) {
+                    e.printStackTrace();
+                    ToastUtil.toastShort(TravelActivityBrowseActivity.this,"连接服务器异常");
+                } else {
+                    if(null != list && list.size() > 0) {
+                        simpleJoinUsers.addAll(list);
+                        mSomeUsersAdapter.notifyDataSetInvalidated();
+                    }
+                }
+              Message msg = mHandler.obtainMessage();
+                msg.what = 0;
+                mHandler.sendMessage(msg);
+            }
+        });
 
+        AVQuery<AVComment> query = AVQuery.getQuery(AVComment.class);
+        query.setLimit(5).include(AVComment.USER_BASE_INFO_KEY).orderByDescending("createAt")
+                .whereEqualTo(AVComment.TRAVELACTIVITY_KEY,mTravelAct.getObjectId())
+                .findInBackground(new FindCallback<AVComment>() {
+                    @Override
+                    public void done(List<AVComment> list, AVException e) {
+                        if(null != e) {
+                            e.printStackTrace();
+                            ToastUtil.toastShort(TravelActivityBrowseActivity.this,"连接服务器异常");
+                        }
+                        if(null != list && list.size() > 0) {
+                            simpleCommemts.addAll(list);
+                            mSomeCommentAdapter.notifyDataSetInvalidated();
+                        }
+
+                        Message msg = mHandler.obtainMessage();
+                        msg.what = 0;
+                        mHandler.sendMessage(msg);
+                    }
+                });
     }
 
     private void initView() {
@@ -218,7 +328,92 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
 
     }
 
+    private int currClickBtnid = 0;
     private void uploadCommemt() {
+        currClickBtnid = R.id.add_commemt_btn;
+        String commemtContent = DataSimpleGetUtil.getEditTextData(mCommemtEditText,"");
+        if(commemtContent.isEmpty()) {
+            return;
+        }
+
+        AVMUser avUser = (AVMUser) AVUser.getCurrentUser();
+        if(null == avUser) {
+            login();
+            return;
+        }
+
+        AVBaseUserInfo baseUserInfo = getAplicationBaseUserInfoCache();
+        if (null == baseUserInfo) {
+            showProgressDialg();
+            AVQuery<AVBaseUserInfo> query = AVQuery.getQuery(AVBaseUserInfo.class);
+            query.getInBackground(avUser.getBaseInfo().getObjectId(), new GetCallback<AVBaseUserInfo>() {
+                @Override
+                public void done(AVBaseUserInfo avBaseUserInfo, AVException e) {
+                    hideProgressDialg();
+                    if(null != e || avBaseUserInfo == null) {
+                        ToastUtil.toastShort(TravelActivityBrowseActivity.this,"获取数据失败");
+                        if(null != e)
+                            e.printStackTrace();
+                        return;
+                    }
+                    updateAplicationBaseUserInfoCache(avBaseUserInfo);
+                    uploadCommemt();
+                }
+            });
+            return;
+        }
+
+        AVComment comment = new AVComment();
+        comment.setUser(avUser);
+        AVACL avacl = new AVACL();
+        avacl.setPublicReadAccess(true);
+        avacl.setWriteAccess(avUser,true);
+        comment.setACL(avacl);
+        comment.setContent(commemtContent);
+        comment.setTravelActivity(mTravelAct);
+        showProgressDialg("提交评论。。。");
+        comment.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                hideProgressDialg();
+                if(null != e) {
+                    e.printStackTrace();
+                    ToastUtil.toastShort(TravelActivityBrowseActivity.this,"添加失败");
+                    return;
+                }
+
+                refreshAct(1);
+                mCommemtEditText.setText("");
+                hideCommemtEditView();
+            }
+        });
+
+    }
+
+    private void refreshAct(int flag) {
+        //刷新评论
+        if(1 == flag) {
+            if(simpleCommemts.size() < 5) {
+                AVQuery<AVComment> query = AVQuery.getQuery(AVComment.class);
+                query.setLimit(5).include(AVComment.USER_BASE_INFO_KEY).orderByDescending("createAt")
+                        .whereEqualTo(AVComment.TRAVELACTIVITY_KEY,mTravelAct.getObjectId())
+                        .findInBackground(new FindCallback<AVComment>() {
+                            @Override
+                            public void done(List<AVComment> list, AVException e) {
+                                if(null != e) {
+                                    e.printStackTrace();
+                                    ToastUtil.toastShort(TravelActivityBrowseActivity.this,"连接服务器异常");
+                                }
+                                if(null != list && list.size() > 0) {
+                                    simpleCommemts.addAll(list);
+                                    mSomeCommentAdapter.notifyDataSetInvalidated();
+                                }
+
+                            }
+                        });
+            }
+
+        }
     }
 
 
@@ -255,6 +450,72 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
     }
 
     private void joinAct() {
+        AVMUser user = (AVMUser) AVUser.getCurrentUser();
+        if(null == user) {
+            login();
+            return;
+        }
+        Long actRegistDeadline = mTravelAct.getRegistrationDeadline();
+        if(actRegistDeadline == null || actRegistDeadline.longValue() <= 0l) {
+            ToastUtil.toastLong(TravelActivityBrowseActivity.this,"报名已经截止，加入失败。");
+            return;
+        }
+
+        long currTime = System.currentTimeMillis();
+        if(currTime > actRegistDeadline.longValue()) {
+            ToastUtil.toastLong(TravelActivityBrowseActivity.this,"报名已经截止，加入失败。");
+            return;
+        }
+
+        AVBaseUserInfo baseUserInfo = getAplicationBaseUserInfoCache();
+        if (null == baseUserInfo) {
+            showProgressDialg();
+            AVQuery<AVBaseUserInfo> query = AVQuery.getQuery(AVBaseUserInfo.class);
+            query.getInBackground(user.getBaseInfo().getObjectId(), new GetCallback<AVBaseUserInfo>() {
+                @Override
+                public void done(AVBaseUserInfo avBaseUserInfo, AVException e) {
+                    hideProgressDialg();
+                    if(null != e || avBaseUserInfo == null) {
+                        ToastUtil.toastShort(TravelActivityBrowseActivity.this,"获取数据失败");
+                        if(null != e)
+                        e.printStackTrace();
+                        return;
+                    }
+                    updateAplicationBaseUserInfoCache(avBaseUserInfo);
+                    joinAct();
+                }
+            });
+            return;
+        }
+
+        mTravelAct.getParticipatorsBaseInfo().add(baseUserInfo);
+        showProgressDialg("加入该活动...");
+
+        mTravelAct.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                hideProgressDialg();
+                if(null == e) {
+                    ToastUtil.toastLong(TravelActivityBrowseActivity.this,"加入成功");
+                }else {
+                    e.printStackTrace();
+                    ToastUtil.toastLong(TravelActivityBrowseActivity.this,"加入失败");
+                }
+            }
+        });
+
+    }
+
+
+    @Override
+    protected void onLoginActivityResult(int resultCode, Intent data) {
+        if(RESULT_OK != resultCode)
+            return;
+        if(currClickBtnid == R.id.add_commemt_btn) {
+            uploadCommemt();
+        } else {
+            joinAct();
+        }
     }
 
     //防止程序没反应过来 导致多次触发.

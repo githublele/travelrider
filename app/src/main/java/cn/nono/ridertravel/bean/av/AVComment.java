@@ -12,9 +12,18 @@ public class AVComment extends AVObject {
 
 //    private final String _key = "";
     public final static String USER_KEY = "user";
+    public final static String USER_BASE_INFO_KEY = "userBaseInfo";
     public final static String CONTENT_KEY = "content";
     public final static String TRAVELACTIVITY_KEY = "TravelActivity";
 
+
+    public AVBaseUserInfo getUserBaseInfo() {
+        return getAVObject(USER_BASE_INFO_KEY);
+    }
+
+    public void setUserBaseInfo(AVBaseUserInfo avBaseUserInfo) {
+        put(USER_BASE_INFO_KEY,avBaseUserInfo);
+    }
 
     public AVTravelActivity getTravelActivity() {
         return getAVObject(TRAVELACTIVITY_KEY);
