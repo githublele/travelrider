@@ -40,7 +40,7 @@ public class ActCommentActivity extends BaseNoTitleActivity implements View.OnCl
     private List<AVComment> simpleCommemts = new ArrayList<AVComment>();
 
 
-    BaseAdapter mSomeCommentAdapter = new BaseAdapter() {
+    private BaseAdapter mSomeCommentAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
             int count = simpleCommemts.size();
@@ -120,9 +120,14 @@ public class ActCommentActivity extends BaseNoTitleActivity implements View.OnCl
             finish();
             return;
         }
-       mListView = (ListView) findViewById(R.id.commemt_listview);
-       mBackBtn = (Button) findViewById(R.id.back_btn);
-        mNoCommemtTipsTextView = (TextView) findViewById(R.id.tips_no_commemt_tv);
+
+        mBackBtn = (Button) findViewById(R.id.back_btn);
+        mBackBtn.setOnClickListener(this);
+        mNoCommemtTipsTextView = (TextView) findViewById(R.id.tips_no_comment_tv);
+
+        mListView = (ListView) findViewById(R.id.comment_listview);
+        mListView.setAdapter(mSomeCommentAdapter);
+
         loadData();
 
     }
@@ -130,7 +135,7 @@ public class ActCommentActivity extends BaseNoTitleActivity implements View.OnCl
     private void loadData() {
         AVQuery<AVComment> query = AVQuery.getQuery(AVComment.class);
         query.include(AVComment.USER_BASE_INFO_KEY).orderByDescending("createAt")
-                .whereEqualTo(AVComment.TRAVELACTIVITY_KEY,mTravelAct.getObjectId())
+                .whereEqualTo(AVComment.TRAVELACTIVITY_KEY,mTravelAct)
                 .findInBackground(new FindCallback<AVComment>() {
                     @Override
                     public void done(List<AVComment> list, AVException e) {

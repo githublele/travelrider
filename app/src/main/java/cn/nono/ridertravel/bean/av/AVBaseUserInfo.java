@@ -11,6 +11,16 @@ public class AVBaseUserInfo extends AVObject {
     public final static String NICKNAME_KEY = "nickName";
 //    public final static String USER_POINTER_KEY = "userPointer";
     public final static String SEX_KEY = "sex";
+    public final static String SIGNATURE_KEY = "signature";
+
+    public void setSignature(String signature) {
+        put(SIGNATURE_KEY,signature);
+    }
+
+    public String getSignature() {
+        return getString(SIGNATURE_KEY);
+    }
+
 
     public void setNickName(String nickName) {
         put(NICKNAME_KEY,nickName);

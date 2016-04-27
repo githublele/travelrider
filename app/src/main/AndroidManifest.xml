@@ -111,6 +111,7 @@
 
 <activity android:name="cn.nono.ridertravel.ui.baidumap.MapPathActivity"></activity>
 <activity android:name="cn.nono.ridertravel.ui.travelact.ActCommentActivity"></activity>
+        <activity android:name="cn.nono.ridertravel.ui.travelact.ActParticipatorActivity"></activity>
 
 
         <activity android:name="cn.nono.ridertravel.test.TestLeanCloudActivity">

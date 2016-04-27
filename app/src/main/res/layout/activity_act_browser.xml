@@ -197,6 +197,14 @@
                 android:text="骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车骑车"
                 android:id="@+id/activity_introduction_tv" />
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/participators_ll"
+            >
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -207,30 +215,35 @@
                 android:layout_height="wrap_content"
                 android:focusable="false"
              android:id="@+id/user_list_gridview"
+                ></cn.nono.ridertravel.view.NoScrollGridView>
+        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/comment_ll"
                 >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="评论"
+                    />
+                <cn.nono.ridertravel.view.NoScrollListView
+                    android:id="@+id/comment_listview"
+                    android:focusable="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </cn.nono.ridertravel.view.NoScrollListView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="没有任何评论"
+                    android:id="@+id/tips_no_comment_tv"
+                    android:visibility="gone"
+                    />
+            </LinearLayout>
 
-
-            </cn.nono.ridertravel.view.NoScrollGridView>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="评论"
-                />
-            <cn.nono.ridertravel.view.NoScrollListView
-                android:id="@+id/commemt_listview"
-                android:focusable="false"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </cn.nono.ridertravel.view.NoScrollListView>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="没有任何评论"
-                android:id="@+id/tips_no_commemt_tv"
-                android:visibility="gone"
-                />
 
         </LinearLayout>
 
@@ -261,7 +274,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/commemt_ll"
+        android:id="@+id/comment_edit_ll"
         >
     <EditText
         android:id="@+id/comment_edittext"

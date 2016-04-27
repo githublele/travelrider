@@ -75,7 +75,7 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
             ViewHolderSomeUser viewHolder;
             if(null == convertView) {
                 viewHolder = new ViewHolderSomeUser();
-                convertView = LayoutInflater.from(TravelActivityBrowseActivity.this).inflate(R.layout.item_act_participators_list, null);
+                convertView = LayoutInflater.from(TravelActivityBrowseActivity.this).inflate(R.layout.item_participators_list, null);
                 viewHolder.headIconImgeView = (ImageView) convertView.findViewById(R.id.head_icon_imageview);
                 convertView.setTag(viewHolder);
             }
@@ -87,6 +87,8 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
             return convertView;
         }
     };
+    private LinearLayout mCommentLinearLayout;
+    private LinearLayout mParticipatorsLinearLayout;
 
     class ViewHolderSomeUser {
         public ImageView  headIconImgeView;
@@ -167,7 +169,7 @@ class ViewHolderCommemt {
 
     private LinearLayout mBottomBtnsLinearLayout;
 
-    private LinearLayout mCommemtLinearLayout;
+    private LinearLayout mCommemtEditLinearLayout;
     private EditText mCommemtEditText;
     private Button mUploadCommemtBtn;
 
@@ -234,7 +236,7 @@ class ViewHolderCommemt {
 
         AVQuery<AVComment> query = AVQuery.getQuery(AVComment.class);
         query.setLimit(5).include(AVComment.USER_BASE_INFO_KEY).orderByDescending("createAt")
-                .whereEqualTo(AVComment.TRAVELACTIVITY_KEY,mTravelAct.getObjectId())
+                .whereEqualTo(AVComment.TRAVELACTIVITY_KEY,mTravelAct)
                 .findInBackground(new FindCallback<AVComment>() {
                     @Override
                     public void done(List<AVComment> list, AVException e) {
@@ -283,11 +285,30 @@ class ViewHolderCommemt {
         mFallInPlaceTextView.setText(mTravelAct.getFallInPlace());
         mActIntroductionTextView = (TextView) findViewById(R.id.activity_introduction_tv);
         mActIntroductionTextView.setText(mTravelAct.getActivityIntroduce());
+        mParticipatorsLinearLayout =(LinearLayout) findViewById(R.id.participators_ll);
+        mParticipatorsLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TravelActivityBrowseActivity.this,ActParticipatorActivity.class);
+                intent.putExtra(ActCommentActivity.AV_TRAVEL_ACT_KEY,mTravelAct);
+                startActivity(intent);
+            }
+        });
         mSomeUserGridView = (GridView) findViewById(R.id.user_list_gridview);
         mSomeUserGridView.setAdapter(mSomeUsersAdapter);
-        mNoCommemtTipsTextView = (TextView) findViewById(R.id.tips_no_commemt_tv);
-        mSomeCommemtListView = (ListView) findViewById(R.id.commemt_listview);
+        mNoCommemtTipsTextView = (TextView) findViewById(R.id.tips_no_comment_tv);
+        mSomeCommemtListView = (ListView) findViewById(R.id.comment_listview);
+
         mSomeCommemtListView.setAdapter(mSomeCommentAdapter);
+        mCommentLinearLayout = (LinearLayout) findViewById(R.id.comment_ll);
+        mCommentLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               Intent intent = new Intent(TravelActivityBrowseActivity.this,ActCommentActivity.class);
+                intent.putExtra(ActCommentActivity.AV_TRAVEL_ACT_KEY,mTravelAct);
+                startActivity(intent);
+            }
+        });
         mBackBtn = (Button) findViewById(R.id.back_btn);
         mBackBtn.setOnClickListener(this);
         mJoinActBtn = (Button) findViewById(R.id.join_activity_btn);
@@ -297,7 +318,7 @@ class ViewHolderCommemt {
 
         mBottomBtnsLinearLayout = (LinearLayout) findViewById(R.id.bottom_btns_ll);
         mCommemtEditText = (EditText) findViewById(R.id.comment_edittext);
-        mCommemtLinearLayout = (LinearLayout) findViewById(R.id.commemt_ll);
+        mCommemtEditLinearLayout = (LinearLayout) findViewById(R.id.comment_edit_ll);
 
         mUploadCommemtBtn = (Button) findViewById(R.id.add_commemt_btn);
         mUploadCommemtBtn.setOnClickListener(this);
@@ -331,16 +352,25 @@ class ViewHolderCommemt {
     private int currClickBtnid = 0;
     private void uploadCommemt() {
         currClickBtnid = R.id.add_commemt_btn;
+        AVComment comment = new AVComment();
+        comment.setTravelActivity(mTravelAct);
+
         String commemtContent = DataSimpleGetUtil.getEditTextData(mCommemtEditText,"");
         if(commemtContent.isEmpty()) {
             return;
         }
+        comment.setContent(commemtContent);
 
         AVMUser avUser = (AVMUser) AVUser.getCurrentUser();
         if(null == avUser) {
             login();
             return;
         }
+        comment.setUser(avUser);
+        AVACL avacl = new AVACL();
+        avacl.setPublicReadAccess(true);
+        avacl.setWriteAccess(avUser,true);
+        comment.setACL(avacl);
 
         AVBaseUserInfo baseUserInfo = getAplicationBaseUserInfoCache();
         if (null == baseUserInfo) {
@@ -362,15 +392,8 @@ class ViewHolderCommemt {
             });
             return;
         }
+        comment.setUserBaseInfo(baseUserInfo);
 
-        AVComment comment = new AVComment();
-        comment.setUser(avUser);
-        AVACL avacl = new AVACL();
-        avacl.setPublicReadAccess(true);
-        avacl.setWriteAccess(avUser,true);
-        comment.setACL(avacl);
-        comment.setContent(commemtContent);
-        comment.setTravelActivity(mTravelAct);
         showProgressDialg("提交评论。。。");
         comment.saveInBackground(new SaveCallback() {
             @Override
@@ -423,13 +446,13 @@ class ViewHolderCommemt {
 
         mCommemtEditText.setText("");
         mBottomBtnsLinearLayout.setVisibility(View.GONE);
-        mCommemtLinearLayout.setVisibility(View.VISIBLE);
+        mCommemtEditLinearLayout.setVisibility(View.VISIBLE);
         mCommemtLinearLayoutVisible = true;
     }
 
     private void hideCommemtEditView() {
         if (mCommemtLinearLayoutVisible) {
-            mCommemtLinearLayout.setVisibility(View.GONE);
+            mCommemtEditLinearLayout.setVisibility(View.GONE);
             mBottomBtnsLinearLayout.setVisibility(View.VISIBLE);
             mCommemtLinearLayoutVisible = false;
         }
