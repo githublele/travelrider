@@ -30,6 +30,7 @@ public class RegistActivity extends BaseNoTitleActivity implements OnClickListen
 	private EditText accountEditText = null;
 	private EditText passwordEditText = null;
 	private RadioGroup sexRadioGroup = null;
+	private Button backBtn;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +45,7 @@ public class RegistActivity extends BaseNoTitleActivity implements OnClickListen
 		passwordEditText = (EditText) findViewById(R.id.password_et);
 		sexRadioGroup = (RadioGroup) findViewById(R.id.sex_rg);
 
-
 	}
-
 
 	private AVMUser avUser = null;
 	private AVBaseUserInfo baseUserInfo = null;

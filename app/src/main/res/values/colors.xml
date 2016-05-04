@@ -5,14 +5,26 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="line_bg_general_gray">#b5b3b2</color>
+    <color name="bg_general_gray">#e9eaeb</color>
     <color name="bg_general_white">#b5b3b2</color>
+    <color name="bg_light_blue">#e3f3ff</color>
+
+
     <color name="text_color_green">#0fdc30</color>
     <color name="text_color_general_black">#6b6b6b</color>
+    <color name="text_color_normal_white">#eff2f3</color>
+    <color name="text_color_light_blue">#56bfef</color>
 
 
+    <color name="colorHintGray">#8f8f8f</color>
+
+    <color name="colorNormalBlack">#414040</color>
     <color name="colorBlue">#3e85e6</color>
     <color name="colorWhite">#fefefe</color>
     <color name="colorBlack">#191a1b</color>
     <color name="colorGray">#acb0b3</color>
+
+    <color name="colorTransitionBlueS">#158abf</color>
+    <color name="colorTransitionBlueE">#6abfe8</color>
 
 </resources>

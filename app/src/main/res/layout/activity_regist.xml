@@ -2,60 +2,183 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@color/bg_general_gray"
+    android:gravity="center_horizontal"
+    >
     
-         <EditText 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@color/colorBlue"
+        android:orientation="horizontal"
+        >
+<Button
+    android:onClick="backFun"
+    android:id="@id/back_btn"
+    android:layout_alignParentLeft="true"
+    android:layout_marginLeft="12dp"
+    android:layout_width="55dp"
+    android:layout_height="32dp"
+    android:background="@mipmap/back_navigate_bk"
+    android:layout_centerVertical="true"
+    />
+
+        <TextView
+            android:textColor="@color/text_color_normal_white"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="注册"
+            android:textSize="24sp"
+            android:gravity="center"
+            />
+    </RelativeLayout>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:hint="昵称"
-        android:id="@+id/nickname_et"
-        />
-         
-         <RadioGroup 
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:id="@+id/sex_rg"
-             android:orientation="horizontal"
-             >
-             <RadioButton 
-                 android:id="@+id/man_rb"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:text="男"
-             	 android:checked="true"
-                 />
-              <RadioButton 
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:text="女"
-                 android:id="@+id/woman_rb"
-                 />
-             
-             
-         </RadioGroup>
-    
-    <EditText 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:hint="邮箱"
-        android:id="@+id/account_et"
-        />
-    
-        <EditText 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:hint="密码"
-        android:id="@+id/password_et"
-        />
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:background="@color/colorWhite"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical"
+            >
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@mipmap/icon_account"
+                />
+
+            <EditText
+                android:id="@+id/account_et"
+                android:layout_marginLeft="6dp"
+                android:textColorHint="@color/colorHintGray"
+                android:textColor="@color/colorNormalBlack"
+                android:background="@null"
+                android:hint="账号(至少6位)"
+                android:textSize="24sp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:background="@color/colorWhite"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp"
+            >
+
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@mipmap/icon_password"
+                />
+            <EditText
+                android:id="@+id/password_et"
+                android:layout_marginLeft="6dp"
+                android:textColorHint="@color/colorHintGray"
+                android:textColor="@color/colorNormalBlack"
+                android:background="@null"
+                android:hint="密码（至少6位）"
+                android:inputType="textPassword"
+                android:textSize="24sp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@color/colorWhite"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp"
+            >
+
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@mipmap/icon_love"
+                />
+            <EditText
+                android:id="@+id/nickname_et"
+                android:layout_marginLeft="6dp"
+                android:textColorHint="@color/colorHintGray"
+                android:textColor="@color/colorNormalBlack"
+                android:background="@null"
+                android:hint="昵称(至少2字符)"
+                android:textSize="24sp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                />
+        </LinearLayout>
         
-    <Button 
-        android:layout_width="wrap_content"
+
+    </LinearLayout>
+    
+    <RadioGroup
+        android:gravity="center"
+        android:id="@+id/sex_rg"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="注册"
+        android:orientation="horizontal"
+        >
+        <RadioButton
+            android:id="@+id/man_rb"
+            android:checked="true"
+            android:button="@null"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/icon_man_selector"
+            />
+        <View
+            android:layout_width="50dp"
+            android:layout_height="match_parent"></View>
+        <RadioButton
+            android:id="@+id/woman_rb"
+            android:button="@null"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/icon_woman_selector"
+            />
+        
+    </RadioGroup>
+
+
+    <Button
+        android:layout_marginTop="24dp"
         android:id="@+id/regist_bt"
+        android:layout_width="326dp"
+        android:layout_height="45dp"
+        android:background="@drawable/login_btn_bk_selector"
+        android:text="完成注册"
+        android:textColor="@color/text_color_normal_white"
+        android:textSize="30sp"
         />
 
 </LinearLayout>

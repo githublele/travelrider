@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
@@ -27,7 +28,7 @@ import cn.nono.ridertravel.util.RegularMatchingUtil;
 public class LoginActivity extends BaseNoTitleActivity implements OnClickListener{
 
 	private Button loginButton = null;
-	private Button registButton = null;
+	private TextView registTv = null;
 	private EditText accountEditText = null;
 	private EditText passwordEditText = null;
 
@@ -41,8 +42,8 @@ public class LoginActivity extends BaseNoTitleActivity implements OnClickListene
 		passwordEditText = (EditText) findViewById(R.id.password_et);
 		loginButton = (Button) findViewById(R.id.login_bt);
 		loginButton.setOnClickListener(this);
-		registButton = (Button) findViewById(R.id.regist_bt);
-		registButton.setOnClickListener(registOnClickListener);
+		registTv = (TextView) findViewById(R.id.regist_tv);
+		registTv.setOnClickListener(registOnClickListener);
 	}
 
 	OnClickListener registOnClickListener = new OnClickListener() {

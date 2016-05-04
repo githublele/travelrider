@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 
 import cn.nono.ridertravel.RiderTravelApplication;
@@ -19,6 +20,10 @@ public class BaseNoTitleActivity extends Activity {
 		dlg.setMessage("数据加载中");
 		dlg.setCancelable(false);
 		return dlg;
+	}
+
+	public void backFun(View v) {
+		finish();
 	}
 
 	protected void showProgressDialg() {
