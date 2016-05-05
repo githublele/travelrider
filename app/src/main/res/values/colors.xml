@@ -14,9 +14,11 @@
     <color name="text_color_general_black">#6b6b6b</color>
     <color name="text_color_normal_white">#eff2f3</color>
     <color name="text_color_light_blue">#56bfef</color>
+    <color name="text_color_red">#ff5f45</color>
 
 
     <color name="colorHintGray">#8f8f8f</color>
+
 
     <color name="colorNormalBlack">#414040</color>
     <color name="colorBlue">#3e85e6</color>

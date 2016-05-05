@@ -25,7 +25,6 @@ public class UserCenterActivity extends BaseNoTitleActivity implements OnClickLi
 	TextView nicknameTextView = null;
 	TextView accountTextView = null;
 	TextView sexTextView = null;
-	TextView birthTextView = null;
 	Button   logoutButton = null;
 
 	AVMUser user = null;
@@ -50,7 +49,6 @@ public class UserCenterActivity extends BaseNoTitleActivity implements OnClickLi
 		nicknameTextView = (TextView) findViewById(R.id.nickname_tv);
 		accountTextView = (TextView) findViewById(R.id.account_tv);
 		sexTextView = (TextView) findViewById(R.id.sex_tv);
-		birthTextView = (TextView) findViewById(R.id.birth_tv);
 		logoutButton = (Button) findViewById(R.id.logout_btn);
 		logoutButton.setOnClickListener(this);
 
