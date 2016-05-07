@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="活动标题"
-            android:id="@+id/activity_headline_tv" />
+            android:id="@+id/diary_headline_tv" />
     </LinearLayout>
 
     <LinearLayout

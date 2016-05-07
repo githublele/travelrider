@@ -22,9 +22,11 @@
 
     <color name="colorNormalBlack">#414040</color>
     <color name="colorBlue">#3e85e6</color>
+    <color name="colorLightBlue">#52b9f7</color>
     <color name="colorWhite">#fefefe</color>
     <color name="colorBlack">#191a1b</color>
     <color name="colorGray">#acb0b3</color>
+    <color name="colorAlphaGray">#3fcccccc</color>
 
     <color name="colorTransitionBlueS">#158abf</color>
     <color name="colorTransitionBlueE">#6abfe8</color>

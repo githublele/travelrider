@@ -2,6 +2,7 @@ package cn.nono.ridertravel.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,25 +16,23 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.Volley;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.nono.ridertravel.R;
-import cn.nono.ridertravel.RiderTravelApplication;
 import cn.nono.ridertravel.adapter.DiaryViewPageAdapter;
+import cn.nono.ridertravel.bean.av.AVBaseUserInfo;
 import cn.nono.ridertravel.bean.av.AVTravelDiary;
 import cn.nono.ridertravel.debug.ToastUtil;
 import cn.nono.ridertravel.ui.diary.DiaryBrowseActivity;
@@ -41,7 +40,6 @@ import cn.nono.ridertravel.ui.diary.MyTravelDiaryCenterActivity;
 
 public final class TravelDiaryFragment extends Fragment {
 
-	private SearchView searchView = null;
 	private Button userInfoBtn = null;
 	private Button userSetingBtn = null;
 	private ViewPager viewPager = null;
@@ -49,10 +47,8 @@ public final class TravelDiaryFragment extends Fragment {
 	private ListView listView = null;
 	private Button addDiaryBtn = null;
 
-	private ImageLoader mImageLoader;
-	private RequestQueue mRequestQueue;
-
 	List<AVTravelDiary> diaries = new ArrayList<AVTravelDiary>();
+	private DisplayImageOptions mDisplayOptions;
 
 	public TravelDiaryFragment(){
 		parentAct = getActivity();
@@ -62,9 +58,19 @@ public final class TravelDiaryFragment extends Fragment {
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mRequestQueue = Volley.newRequestQueue(getActivity());
-		mImageLoader = new ImageLoader(mRequestQueue,((RiderTravelApplication)getActivity().getApplication()).getDiskBitmapCache());
-
+		if(null == mDisplayOptions) {
+			mDisplayOptions = new DisplayImageOptions.Builder()
+					.showImageOnLoading(R.drawable.picture_default) //设置图片在下载期间显示的图片
+					.showImageForEmptyUri(R.drawable.picture_default_damaged)//设置图片Uri为空或是错误的时候显示的图片
+					.showImageOnFail(R.drawable.picture_default_damaged)  //设置图片加载/解码过程中错误时候显示的图片
+					.cacheInMemory(true)//设置下载的图片是否缓存在内存中
+					.cacheOnDisc(true)//设置下载的图片是否缓存在SD卡中
+					.considerExifParams(true)  //是否考虑JPEG图像EXIF参数（旋转，翻转）
+					.imageScaleType(ImageScaleType.EXACTLY_STRETCHED)//设置图片以如何的编码方式显示
+					.bitmapConfig(Bitmap.Config.RGB_565)//设置图片的解码类型//
+					.resetViewBeforeLoading(true)//设置图片在下载前是否重置，复位
+					.build();//构建完成
+		}
 
 	}
 
@@ -72,6 +78,7 @@ public final class TravelDiaryFragment extends Fragment {
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		AVQuery<AVTravelDiary> query = AVQuery.getQuery(AVTravelDiary.class);
+		query.include(AVTravelDiary.AUTHOR_BASE_INFO_POINTER_KEY);
 		query.orderByDescending("createAt");
 		query.findInBackground(new FindCallback<AVTravelDiary>() {
 			@Override
@@ -112,21 +119,23 @@ public final class TravelDiaryFragment extends Fragment {
 			if(null == convertView) {
 				viewHolder = new ViewHolder();
 				convertView = LayoutInflater.from(parentAct).inflate(R.layout.item_diary_list,null);
-				viewHolder.coverNetWorkImageView = (NetworkImageView) convertView.findViewById(R.id.diary_cover_networkimageview);
-				viewHolder.daysCountTextView = (TextView) convertView.findViewById(R.id.days_count_tv);
-				viewHolder.startDateTextView = (TextView) convertView.findViewById(R.id.start_date_tv);
-				viewHolder.placeTextView = (TextView) convertView.findViewById(R.id.location_tv);
-				viewHolder.summaryTextView = (TextView) convertView.findViewById(R.id.summary_tv);
+				viewHolder.coverImageView = (ImageView) convertView.findViewById(R.id.diary_cover_imageview);
+				viewHolder.baseInfoTextView = (TextView) convertView.findViewById(R.id.diary_base_info_tv);
+				viewHolder.headlineTextView = (TextView) convertView.findViewById(R.id.diary_headline_tv);
+				viewHolder.praiseTimesTextView = (TextView) convertView.findViewById(R.id.praise_times_tv);
+				viewHolder.userNicknameTextView = (TextView) convertView.findViewById(R.id.user_nickname_tv);
 				convertView.setTag(viewHolder);
 			}
 
 			viewHolder = (ViewHolder) convertView.getTag();
-			viewHolder.coverNetWorkImageView.setDefaultImageResId(R.mipmap.ic_launcher);
-			viewHolder.coverNetWorkImageView.setImageUrl(avTravelDiary.getCover().getUrl(),mImageLoader);
-			viewHolder.placeTextView.setText(avTravelDiary.getPlace());
-			viewHolder.startDateTextView.setText(avTravelDiary.getTravelStartDate());
-			viewHolder.daysCountTextView.setText(avTravelDiary.getDays()+"");
-			viewHolder.summaryTextView.setText(avTravelDiary.getHeadline()+"");
+			viewHolder = (ViewHolder) convertView.getTag();
+			viewHolder.headlineTextView.setText(avTravelDiary.getHeadline());
+			viewHolder.baseInfoTextView.setText(getDiaryBaseInfo(avTravelDiary));
+			viewHolder.praiseTimesTextView.setText(avTravelDiary.getPraiseTimes()+"");
+			com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(avTravelDiary.getCover().getUrl(), viewHolder.coverImageView,mDisplayOptions);
+			AVBaseUserInfo avBaseUserInfo = avTravelDiary.getAuthorBaseInfo();
+			if(null != avBaseUserInfo)
+				viewHolder.userNicknameTextView.setText(avBaseUserInfo.getNickname());
 
 			return convertView;
 		}
@@ -151,11 +160,11 @@ public final class TravelDiaryFragment extends Fragment {
 	};
 
 	class ViewHolder {
-		public TextView startDateTextView;
-		public TextView daysCountTextView;
-		public TextView placeTextView;
-		public TextView summaryTextView;
-		public NetworkImageView coverNetWorkImageView;
+		public TextView baseInfoTextView;
+		public ImageView coverImageView;
+		public TextView headlineTextView;
+		public TextView userNicknameTextView;
+		public TextView praiseTimesTextView;
 	}
 
 
@@ -164,7 +173,6 @@ public final class TravelDiaryFragment extends Fragment {
 		if(null == parentAct)
 			parentAct = getActivity();
 
-		searchView = (SearchView) view.findViewById(R.id.search);
 		userInfoBtn = (Button) view.findViewById(R.id.user_info);
 		userSetingBtn = (Button) view.findViewById(R.id.user_seting);
 		userInfoBtn.setOnClickListener(new OnClickListener() {
@@ -176,7 +184,7 @@ public final class TravelDiaryFragment extends Fragment {
 				AVUser user = AVUser.getCurrentUser();
 				//已经登陆 显示用户信息,没有登陆进入登陆页面
 				if (null != user) {
-					Intent intent = new Intent(getActivity(), UserCenterActivity.class);
+					Intent intent = new Intent(getActivity(), UserInfoActivity.class);
 					startActivity(intent);
 				} else {
 					Intent intent = new Intent(getActivity(), LoginActivity.class);
@@ -228,11 +236,28 @@ public final class TravelDiaryFragment extends Fragment {
 
 	}
 
+	private String getDiaryBaseInfo(AVTravelDiary avTravelDiary) {
+		if(null == avTravelDiary)
+			return "";
+		Integer days =	avTravelDiary.getDays();
+		if(null == days)
+			days = 1;
+		String startDate = avTravelDiary.getTravelStartDate();
+		if(null == startDate) {
+			startDate = "";
+		}
+
+		StringBuilder stringBuilder = new StringBuilder(32);
+		stringBuilder.append(startDate);
+		stringBuilder.append("	");
+		stringBuilder.append(days);
+		stringBuilder.append("天");
+		return stringBuilder.toString();
+	}
+
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
-		mRequestQueue.start();
-		mRequestQueue = null;
 		super.onDestroy();
 	}
 
@@ -241,7 +266,5 @@ public final class TravelDiaryFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onDestroyView();
 	}
-	
-	
 
 }

@@ -1,11 +1,14 @@
 package cn.nono.ridertravel.bean.av;
 
+import android.annotation.SuppressLint;
+
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;
 
 /**
  * Created by Administrator on 2016/4/26.
  */
+@SuppressLint("ParcelCreator")
 @AVClassName("UserBaseInfo")
 public class AVBaseUserInfo extends AVObject {
     public final static String NICKNAME_KEY = "nickName";

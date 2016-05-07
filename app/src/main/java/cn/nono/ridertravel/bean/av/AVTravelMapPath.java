@@ -1,5 +1,7 @@
 package cn.nono.ridertravel.bean.av;
 
+import android.annotation.SuppressLint;
+
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVGeoPoint;
 import com.avos.avoscloud.AVObject;
@@ -9,6 +11,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/4/21.
  */
+@SuppressLint("ParcelCreator")
 @AVClassName("TravelMapPath")
 public class AVTravelMapPath extends AVObject {
 

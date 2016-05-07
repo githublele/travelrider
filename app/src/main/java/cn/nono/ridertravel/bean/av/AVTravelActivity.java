@@ -1,5 +1,7 @@
 package cn.nono.ridertravel.bean.av;
 
+import android.annotation.SuppressLint;
+
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVRelation;
@@ -7,6 +9,7 @@ import com.avos.avoscloud.AVRelation;
 /**
  * Created by Administrator on 2016/4/15.
  */
+@SuppressLint("ParcelCreator")
 @AVClassName("TravelActivity")
 public class AVTravelActivity extends AVObject{
 

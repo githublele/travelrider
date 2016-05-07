@@ -1,11 +1,14 @@
 package cn.nono.ridertravel.bean.av;
 
+import android.annotation.SuppressLint;
+
 import com.avos.avoscloud.AVRelation;
 import com.avos.avoscloud.AVUser;
 
 /**
  * Created by Administrator on 2016/4/13.
  */
+@SuppressLint("ParcelCreator")
 public class AVMUser extends AVUser{
 
     public final static String JOINED_ACTIVITY_RELATION_KEY = "TravelActivitys";

@@ -1,5 +1,7 @@
 package cn.nono.ridertravel.bean.av;
 
+import android.annotation.SuppressLint;
+
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
@@ -9,6 +11,7 @@ import com.avos.avoscloud.AVUser;
 /**
  * Created by Administrator on 2016/4/12.
  */
+@SuppressLint("ParcelCreator")
 @AVClassName("TravelDiary")
 public class AVTravelDiary extends AVObject{
     public static final String HEAD_LINE_KEY = "headline";
@@ -19,6 +22,7 @@ public class AVTravelDiary extends AVObject{
     public static final String DAYS_KEY = "days";
     public static final String PRAISE_TIMES_KEY = "praiseTimes";
     public static final String AUTHOR_KEY = "authorPointer";
+    public final static String AUTHOR_BASE_INFO_POINTER_KEY ="authorBaseInfoPointer";
     public static final String DIARYCONTENT_RELATIONS_KEY = "diaryContents";
 
 //    private final String _key = "";
@@ -90,5 +94,13 @@ public class AVTravelDiary extends AVObject{
 
     public void setAuthorPointer(AVUser authorPointer) {
         put(AUTHOR_KEY,authorPointer);
+    }
+
+    public AVBaseUserInfo getAuthorBaseInfo() {
+        return getAVObject(AUTHOR_BASE_INFO_POINTER_KEY);
+    }
+
+    public void setAuthorBaseUserInfo(AVBaseUserInfo avBaseUserInfo) {
+        put(AUTHOR_BASE_INFO_POINTER_KEY,avBaseUserInfo);
     }
 }

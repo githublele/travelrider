@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_general_gray"
-    android:orientation="vertical" >
-
-
-
+    android:background="@color/colorGray"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,211 +22,143 @@
             android:layout_centerVertical="true"
             />
 
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:background="@color/colorLightBlue"
+
+        >
+
+        <ImageView
+            android:id="@+id/user_head_icon_imageview"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:src="@mipmap/icon_head_default"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            />
+
         <TextView
-            android:textColor="@color/text_color_normal_white"
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="个人资料"
-            android:textSize="24sp"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:text="落仔"
+            android:id="@+id/user_nickname_tv"
+            android:textColor="@color/text_color_normal_white"
+            android:textSize="18sp"
+            android:layout_toRightOf="@id/user_head_icon_imageview"
+            android:layout_alignTop="@id/user_head_icon_imageview"
+            android:layout_marginTop="10dp"
+            />
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@mipmap/icon_man_bk_w"
+            android:layout_toRightOf="@id/user_nickname_tv"
+            android:layout_alignBottom="@id/user_nickname_tv"
+            />
+
+        <ImageView
+            android:id="@+id/location_imageView"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/icon_location"
+            android:layout_toRightOf="@id/user_head_icon_imageview"
+            android:layout_below="@id/user_nickname_tv"
+            android:layout_marginTop="20dp"
+            />
+        <TextView
+            android:layout_marginTop="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/city_tv"
+            android:text="东莞"
+            android:layout_toRightOf="@id/location_imageView"
+            android:layout_alignTop="@id/location_imageView"
+            android:textColor="@color/text_color_normal_white"
+            android:textSize="12sp"
+            />
+        
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="48dp"
+            android:src="@mipmap/icon_nav_right_w"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             />
     </RelativeLayout>
 
 <LinearLayout
-    android:layout_marginTop="12dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/colorWhite"
+    android:layout_marginTop="12dp"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
     >
-    <RelativeLayout
+
+    <RadioGroup
+        android:id="@id/navigation_radioGroup"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:id="@+id/user_head_icon_rl"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
         >
-<TextView
-    android:layout_centerVertical="true"
-    android:layout_alignParentLeft="true"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="头像"
-    android:textSize="18sp"
-    android:textColor="@color/text_color_general_black"
-    />
-
-        <ImageView
-            android:id="@+id/head_icon_imageview"
-            android:src="@mipmap/icon_head_default"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_toLeftOf="@+id/right_nav_h"
+        <RadioButton
+        android:id="@+id/my_diary_radioButton"
+            android:background="@drawable/nav_btn_left_bg_selector"
+            android:textColor="@drawable/nav_btn_text_color_selector"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:button="@null"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="我的游记"
             />
-        
-        <ImageView
-            android:id="@+id/right_nav_h"
-            android:layout_centerVertical="true"
-            android:layout_width="24dp"
-            android:layout_height="48dp"
-            android:src="@mipmap/icon_nav_right_arrows"
-            android:layout_alignParentRight="true"
+        <RadioButton
+            android:id="@+id/diary_collection_radioButton"
+            android:background="@drawable/nav_btn_center_bg_selector"
+            android:textColor="@drawable/nav_btn_text_color_selector"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:button="@null"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="收藏游记"
             />
-    </RelativeLayout>
+        <RadioButton
+            android:id="@+id/my_activity_radioButton"
+            android:background="@drawable/nav_btn_right_bg_selector"
+            android:textColor="@drawable/nav_btn_text_color_selector"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:button="@null"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="我的活动"
+            />
 
-    <View
-    android:layout_width="match_parent"
-    android:layout_height="0.5dp"
-    android:background="@color/colorGray"
-    ></View>
-
-    <RelativeLayout
+    </RadioGroup>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:id="@+id/user_nickname_rl"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        >
-        <TextView
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="昵称"
-            android:textSize="18sp"
-            android:textColor="@color/text_color_general_black"
-            />
-
-        <TextView
-            android:id="@+id/nickname_tv"
-            android:layout_centerVertical="true"
-            android:text="落仔"
-            android:textSize="15sp"
-            android:textColor="@color/colorHintGray"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/right_nav_n"
-            />
-
-        <ImageView
-            android:id="@+id/right_nav_n"
-            android:layout_centerVertical="true"
-            android:layout_width="24dp"
-            android:layout_height="48dp"
-            android:src="@mipmap/icon_nav_right_arrows"
-            android:layout_alignParentRight="true"
-            />
-    </RelativeLayout>
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:id="@+id/content_ll"
+        ></LinearLayout>
 
 </LinearLayout>
 
 
 
 
-    <LinearLayout
-        android:layout_marginTop="12dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/colorWhite"
-        >
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/user_city_rl"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            >
-            <TextView
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="用户"
-                android:textSize="18sp"
-                android:textColor="@color/text_color_general_black"
-                />
-
-            <TextView
-                android:id="@+id/account_tv"
-                android:layout_centerVertical="true"
-                android:text="用户1"
-                android:textSize="15sp"
-                android:textColor="@color/colorHintGray"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/right_nav_c"
-                />
-
-            <ImageView
-                android:id="@+id/right_nav_c"
-                android:layout_centerVertical="true"
-                android:layout_width="24dp"
-                android:layout_height="48dp"
-                android:src="@mipmap/icon_nav_right_arrows"
-                android:layout_alignParentRight="true"
-                />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/colorGray"
-            ></View>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/user_sex_rl"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            >
-            <TextView
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="性别"
-                android:textSize="18sp"
-                android:textColor="@color/text_color_general_black"
-                />
-
-            <TextView
-                android:id="@+id/sex_tv"
-                android:layout_centerVertical="true"
-                android:text="男"
-                android:textSize="15sp"
-                android:textColor="@color/colorHintGray"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/right_nav_s"
-                />
-
-            <ImageView
-                android:id="@+id/right_nav_s"
-                android:layout_centerVertical="true"
-                android:layout_width="24dp"
-                android:layout_height="48dp"
-                android:src="@mipmap/icon_nav_right_arrows"
-                android:layout_alignParentRight="true"
-                />
-        </RelativeLayout>
-
-    </LinearLayout>
 
 
-<Button
-    android:layout_marginTop="50dp"
-    android:id="@+id/logout_btn"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:background="@drawable/layout_btn_bk_selector"
-    android:text="退出登录"
-    android:textSize="18sp"
-    android:textColor="@color/text_color_red"
 
-    />
 
 
 </LinearLayout>

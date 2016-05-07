@@ -1,11 +1,14 @@
 package cn.nono.ridertravel.bean.av;
 
+import android.annotation.SuppressLint;
+
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;
 
 /**
  * Created by Administrator on 2016/4/15.
  */
+@SuppressLint("ParcelCreator")
 @AVClassName("Comment")
 public class AVComment extends AVObject {
 

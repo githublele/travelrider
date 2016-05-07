@@ -1,61 +1,42 @@
 package cn.nono.ridertravel.ui.diary;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.FindCallback;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.nono.ridertravel.R;
-import cn.nono.ridertravel.RiderTravelApplication;
 import cn.nono.ridertravel.bean.av.AVTravelDiary;
-import cn.nono.ridertravel.debug.ToastUtil;
 import cn.nono.ridertravel.ui.LoginActivity;
 
-public class MyTravelDiaryFragment extends Fragment implements OnClickListener{
-
+public class MyTravelDiaryFragmentT extends Fragment implements OnClickListener{
 
 	private final static int LOGIN_REQUEST_CODE = 1;
-
-	// 声明RequestQueue
-	private RequestQueue mRequestQueue;
-	private ImageLoader mImageLoader;
-
-
-
-	private Button diaryAddButton = null;
-	private ListView diaryListView;
+	private DisplayImageOptions mDisplayOptions = null;
+	private Button diaryAddButton;
+	private ListView listView;
 	private List<AVTravelDiary> travelDiaries = new ArrayList<AVTravelDiary>();
-	Handler handler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
 
-		}
-	};
+
 	private BaseAdapter diaryAdapter = new BaseAdapter() {
 		@Override
 		public int getCount() {
@@ -73,10 +54,9 @@ public class MyTravelDiaryFragment extends Fragment implements OnClickListener{
 		}
 
 
-
-
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
+			AVTravelDiary avTravelDiary = travelDiaries.get(position);
 			ViewHolder viewHolder;
 			if(null == convertView) {
 				convertView = LayoutInflater.from(getActivity()).inflate(R.layout.item_my_diary_list,null);
@@ -87,12 +67,32 @@ public class MyTravelDiaryFragment extends Fragment implements OnClickListener{
 				convertView.setTag(viewHolder);
 			}
 			viewHolder = (ViewHolder) convertView.getTag();
-			AVTravelDiary avTravelDiary = travelDiaries.get(position);
 			viewHolder.headlineTextView.setText(avTravelDiary.getHeadline());
-//			viewHolder.baseInfo.setText("???");
+			viewHolder.baseInfo.setText(getDiaryBaseInfo(avTravelDiary));
+			ImageLoader.getInstance().displayImage(avTravelDiary.getCover().getUrl(), viewHolder.coverImageView,mDisplayOptions);
 			return convertView;
 		}
 	};
+
+	private String getDiaryBaseInfo(AVTravelDiary avTravelDiary) {
+		if(null == avTravelDiary)
+			return "";
+		Integer days =	avTravelDiary.getDays();
+		if(null == days)
+			days = 1;
+		String startDate = avTravelDiary.getTravelStartDate();
+		if(null == startDate) {
+			startDate = "";
+		}
+
+		StringBuilder stringBuilder = new StringBuilder(32);
+		stringBuilder.append(startDate);
+		stringBuilder.append("	");
+		stringBuilder.append(days);
+		stringBuilder.append("天");
+		return stringBuilder.toString();
+	}
+
 
 	class ViewHolder {
 		public TextView baseInfo;
@@ -117,15 +117,20 @@ public class MyTravelDiaryFragment extends Fragment implements OnClickListener{
 
 	@Override
 	public void onAttach(Context context) {
-		super.onAttach(context);
-
-		// 实例化请求队列
-		mRequestQueue = Volley.newRequestQueue(getActivity());
-		// 实例化图片加载器
-		mImageLoader = new ImageLoader(mRequestQueue,((RiderTravelApplication)getActivity().getApplication()).getDiskBitmapCache());
-
-
-
+			if(null == mDisplayOptions) {
+				mDisplayOptions = new DisplayImageOptions.Builder()
+						.showImageOnLoading(R.drawable.picture_default) //设置图片在下载期间显示的图片
+						.showImageForEmptyUri(R.drawable.picture_default_damaged)//设置图片Uri为空或是错误的时候显示的图片
+						.showImageOnFail(R.drawable.picture_default_damaged)  //设置图片加载/解码过程中错误时候显示的图片
+						.cacheInMemory(true)//设置下载的图片是否缓存在内存中
+						.cacheOnDisc(true)//设置下载的图片是否缓存在SD卡中
+						.considerExifParams(true)  //是否考虑JPEG图像EXIF参数（旋转，翻转）
+						.imageScaleType(ImageScaleType.EXACTLY_STRETCHED)//设置图片以如何的编码方式显示
+						.bitmapConfig(Bitmap.Config.RGB_565)//设置图片的解码类型//
+						.resetViewBeforeLoading(true)//设置图片在下载前是否重置，复位
+						.build();//构建完成
+			}
+			super.onAttach(context);
 	}
 
 	@Override
@@ -137,64 +142,17 @@ public class MyTravelDiaryFragment extends Fragment implements OnClickListener{
 		return view;
 	}
 
-	ProgressDialog progressDialog = null;
 	private void init(View view) {
 		// TODO Auto-generated method stub
+	 	listView =	(ListView) view.findViewById(R.id.diarys_listview);
+		listView.setAdapter(this.diaryAdapter);
+
 		diaryAddButton = (Button) view.findViewById(R.id.add_diary_btn);
 		diaryAddButton.setOnClickListener(this);
-		diaryListView = (ListView) view.findViewById(R.id.diarys_listview);
-		diaryListView.setAdapter(diaryAdapter);
-		diaryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				AVTravelDiary avTravelDiary = travelDiaries.get(position);
-				if(null == avTravelDiary)
-					return;
-				Intent intent = new Intent(getActivity(),DiaryBrowseActivity.class);
-				intent.putExtra("avTravelDiary",avTravelDiary);
-				startActivity(intent);
-
-
-			}
-		});
-
-
-		progressDialog = new ProgressDialog(getActivity());
-		progressDialog.setMessage("加载中。。。。");
-		progressDialog.setCancelable(false);
-		progressDialog.show();
-		AVUser avUser = AVUser.getCurrentUser();
-		AVQuery<AVTravelDiary> travelDiaryAVQuery = AVQuery.getQuery(AVTravelDiary.class);
-		travelDiaryAVQuery.whereEqualTo(AVTravelDiary.AUTHOR_KEY,avUser);
-		travelDiaryAVQuery.orderByDescending("createdAt");
-		travelDiaryAVQuery.findInBackground(new FindCallback<AVTravelDiary>() {
-			@Override
-			public void done(List<AVTravelDiary> list, AVException e) {
-				if(null != progressDialog) {
-					progressDialog.dismiss();
-					progressDialog = null;
-				}
-
-				if (null == e) {
-					if(null != list && list.size() > 0) {
-						travelDiaries.clear();
-						travelDiaries.addAll(list);
-						diaryAdapter.notifyDataSetInvalidated();
-					}
-
-				} else {
-					e.printStackTrace();
-					ToastUtil.toastShort(getActivity(),"拉取数据失败。error");
-				}
-
-
-			}
-		});
-
-
-
 
 	}
+
+
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -207,14 +165,13 @@ public class MyTravelDiaryFragment extends Fragment implements OnClickListener{
 	}
 
 
-
 	@Override
 	public void onDestroy() {
 
-		mRequestQueue.stop();
-		mRequestQueue = null;
 		super.onDestroy();
 	}
+
+
 
 
 }
