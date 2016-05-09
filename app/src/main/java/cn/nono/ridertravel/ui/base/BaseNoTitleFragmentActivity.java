@@ -9,7 +9,7 @@ import android.view.Window;
 import cn.nono.ridertravel.ui.LoginActivity;
 
 public class BaseNoTitleFragmentActivity extends FragmentActivity {
-	private static final int LOGIN_REQ_CODE = 99999;
+	private static final int LOGIN_REQ_CODE = 99;
 	public void backFun(View v) {
 		finish();
 	}

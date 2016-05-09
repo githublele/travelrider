@@ -12,7 +12,7 @@ import cn.nono.ridertravel.bean.av.AVBaseUserInfo;
 import cn.nono.ridertravel.ui.LoginActivity;
 
 public class BaseNoTitleActivity extends Activity {
-	private static final int LOGIN_REQ_CODE = 99999;
+	private static final int LOGIN_REQ_CODE = 99;
 
 	private ProgressDialog mProgDlg = null;
 	protected ProgressDialog progressDialogCreate() {

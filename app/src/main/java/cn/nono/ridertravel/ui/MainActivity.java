@@ -78,7 +78,7 @@ public class MainActivity extends BaseNoTitleFragmentActivity implements RadioGr
 		} else if (R.id.user_center_radioBtn == checkedId) {
 			AVMUser avmUser = (AVMUser) AVUser.getCurrentUser();
 			if(null == avmUser) {
-				mLoginFlag = 2;
+				mLoginFlag = 3;
 				login();
 				//阻止本次的点击（回复点击前的显示状态）
 				if(mCurrentShowFragment == mDiaryFragemt) {
@@ -90,7 +90,7 @@ public class MainActivity extends BaseNoTitleFragmentActivity implements RadioGr
 				}
 				return;
 			}
-			if(null == mActivityFragment) {
+			if(null == mUserCenterFragment) {
 				mUserCenterFragment = new UserCenterFragment();
 				tc.add(R.id.content,mUserCenterFragment);
 			}
@@ -101,7 +101,7 @@ public class MainActivity extends BaseNoTitleFragmentActivity implements RadioGr
 		 else {
 			AVMUser avmUser = (AVMUser) AVUser.getCurrentUser();
 			if(null == avmUser) {
-				mLoginFlag = 3;
+				mLoginFlag = 2;
 				login();
 				//阻止本次的点击（回复点击前的显示状态）
 				if(mCurrentShowFragment == mDiaryFragemt) {
@@ -121,18 +121,23 @@ public class MainActivity extends BaseNoTitleFragmentActivity implements RadioGr
 			mCurrentShowFragment = mTravelRecordFragment;
 		}
 
-		tc.show(mCurrentShowFragment).commit();
+//		注意这里不能用 tc.commit()
+//	    其实一开始tc.commit()（必须运行在onSaveInstanceState执行前！！！） 运行时没问题的！ 但是一旦出现这种情况(当acitvity 已经运行了onSaveInstanceState(保存activity一些状态信息，因为activity将要销毁了，如果还是要commit 那就抛异常了)。)就GG了。Activity
+		tc.show(mCurrentShowFragment).commitAllowingStateLoss();
 	}
+
+
 
 	@Override
 	protected void onLoginActivityResult(int resultCode, Intent data) {
 		if (RESULT_OK == resultCode) {
 			if (2 == mLoginFlag) {
+				mNavigationRedioGroup.check(R.id.notification_radioBtn);
+			}
+
+			if (3 == mLoginFlag) {
 				mNavigationRedioGroup.check(R.id.user_center_radioBtn);
 			}
-			if (3 == mLoginFlag) {
-					mNavigationRedioGroup.check(R.id.notification_radioBtn);
-				}
 				mLoginFlag = -1;
 			}
 		}

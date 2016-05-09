@@ -35,7 +35,6 @@ dependencies {
     compile 'com.android.support:design:23.3.0'
     //avoscloud-sdk 为 LeanCloud基础包
     compile 'cn.leancloud.android:avoscloud-sdk:v3.+'
-    compile project(':library_viewpagerindicator')
     compile files('libs/volley.jar')
     compile project(':timeselector')
     compile files('libs/BaiduLBS_Android.jar')

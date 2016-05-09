@@ -1,21 +1,16 @@
 package cn.nono.ridertravel.ui.diary;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVUser;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -23,13 +18,11 @@ import java.util.List;
 
 import cn.nono.ridertravel.R;
 import cn.nono.ridertravel.bean.av.AVTravelDiary;
-import cn.nono.ridertravel.ui.LoginActivity;
 import cn.nono.ridertravel.util.ImageLoaderOptionsSetting;
 
-public class MyTravelDiaryFragmentT extends Fragment implements OnClickListener{
+public class MyTravelDiaryFragmentT extends Fragment {
 
 	private final static int LOGIN_REQUEST_CODE = 1;
-	private Button diaryAddButton;
 	private ListView listView;
 	private List<AVTravelDiary> travelDiaries = new ArrayList<AVTravelDiary>();
 
@@ -97,21 +90,6 @@ public class MyTravelDiaryFragmentT extends Fragment implements OnClickListener{
 		public TextView headlineTextView;
 	}
 
-	
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		AVUser avUser = AVUser.getCurrentUser();
-		if(null == avUser) {
-			Intent intent = new Intent(getActivity(), LoginActivity.class);
-			startActivityForResult(intent,LOGIN_REQUEST_CODE);
-			return;
-		}
-		Intent intent = new Intent(getActivity(), TravelDiaryEditActivity.class);
-		startActivity(intent);
-	}
-
-
 	@Override
 	public void onAttach(Context context) {
 			super.onAttach(context);
@@ -131,21 +109,6 @@ public class MyTravelDiaryFragmentT extends Fragment implements OnClickListener{
 	 	listView =	(ListView) view.findViewById(R.id.diarys_listview);
 		listView.setAdapter(this.diaryAdapter);
 
-		diaryAddButton = (Button) view.findViewById(R.id.add_diary_btn);
-		diaryAddButton.setOnClickListener(this);
-
-	}
-
-
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(LOGIN_REQUEST_CODE == requestCode) {
-			if(resultCode == Activity.RESULT_OK) {
-				onClick(null);
-				return;
-			}
-		}
 	}
 
 

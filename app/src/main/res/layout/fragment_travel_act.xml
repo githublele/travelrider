@@ -17,17 +17,29 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="活动列表"
             android:id="@+id/textView6" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="建活动"
-            android:id="@+id/create_activity_btn" />
     </LinearLayout>
 
-    <ListView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:id="@+id/activity_list_listview" />
+        android:layout_weight="1">
+        >
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/activity_list_listview" />
+
+        <Button
+            android:id="@+id/create_activity_btn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/add_btn_bg_selector"
+            android:layout_gravity="right|bottom"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="24dp"
+            />
+    </FrameLayout>
+
+
+
 </LinearLayout>

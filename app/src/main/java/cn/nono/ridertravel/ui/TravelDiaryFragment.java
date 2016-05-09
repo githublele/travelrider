@@ -2,10 +2,8 @@ package cn.nono.ridertravel.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -24,8 +22,6 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +29,19 @@ import java.util.List;
 import cn.nono.ridertravel.R;
 import cn.nono.ridertravel.adapter.DiaryViewPageAdapter;
 import cn.nono.ridertravel.bean.av.AVBaseUserInfo;
+import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.bean.av.AVTravelDiary;
 import cn.nono.ridertravel.debug.ToastUtil;
+import cn.nono.ridertravel.ui.base.BaseFragment;
 import cn.nono.ridertravel.ui.diary.DiaryBrowseActivity;
-import cn.nono.ridertravel.ui.diary.MyTravelDiaryCenterActivity;
+import cn.nono.ridertravel.ui.diary.TravelDiaryEditActivity;
+import cn.nono.ridertravel.util.ImageLoaderOptionsSetting;
 
-public final class TravelDiaryFragment extends Fragment {
+public final class TravelDiaryFragment extends BaseFragment implements OnClickListener{
+
+	private final static int ADD_DIRAY_REQUEST_CODE = 1;
+
+
 
 	private Button userInfoBtn = null;
 	private Button userSetingBtn = null;
@@ -48,7 +51,6 @@ public final class TravelDiaryFragment extends Fragment {
 	private Button addDiaryBtn = null;
 
 	List<AVTravelDiary> diaries = new ArrayList<AVTravelDiary>();
-	private DisplayImageOptions mDisplayOptions;
 
 	public TravelDiaryFragment(){
 		parentAct = getActivity();
@@ -58,20 +60,6 @@ public final class TravelDiaryFragment extends Fragment {
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(null == mDisplayOptions) {
-			mDisplayOptions = new DisplayImageOptions.Builder()
-					.showImageOnLoading(R.drawable.picture_default) //设置图片在下载期间显示的图片
-					.showImageForEmptyUri(R.drawable.picture_default_damaged)//设置图片Uri为空或是错误的时候显示的图片
-					.showImageOnFail(R.drawable.picture_default_damaged)  //设置图片加载/解码过程中错误时候显示的图片
-					.cacheInMemory(true)//设置下载的图片是否缓存在内存中
-					.cacheOnDisc(true)//设置下载的图片是否缓存在SD卡中
-					.considerExifParams(true)  //是否考虑JPEG图像EXIF参数（旋转，翻转）
-					.imageScaleType(ImageScaleType.EXACTLY_STRETCHED)//设置图片以如何的编码方式显示
-					.bitmapConfig(Bitmap.Config.RGB_565)//设置图片的解码类型//
-					.resetViewBeforeLoading(true)//设置图片在下载前是否重置，复位
-					.build();//构建完成
-		}
-
 	}
 
 	@Override
@@ -132,7 +120,7 @@ public final class TravelDiaryFragment extends Fragment {
 			viewHolder.headlineTextView.setText(avTravelDiary.getHeadline());
 			viewHolder.baseInfoTextView.setText(getDiaryBaseInfo(avTravelDiary));
 			viewHolder.praiseTimesTextView.setText(avTravelDiary.getPraiseTimes()+"");
-			com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(avTravelDiary.getCover().getUrl(), viewHolder.coverImageView,mDisplayOptions);
+			com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(avTravelDiary.getCover().getUrl(), viewHolder.coverImageView, ImageLoaderOptionsSetting.getConstantImageLoaderDefaultOptions());
 			AVBaseUserInfo avBaseUserInfo = avTravelDiary.getAuthorBaseInfo();
 			if(null != avBaseUserInfo)
 				viewHolder.userNicknameTextView.setText(avBaseUserInfo.getNickname());
@@ -158,6 +146,18 @@ public final class TravelDiaryFragment extends Fragment {
 			return diaries.size();
 		}
 	};
+
+	@Override
+	public void onClick(View v) {
+		AVMUser avmUser = (AVMUser) AVUser.getCurrentUser();
+		if (null == avmUser) {
+			login();
+			return;
+		}
+		//jump to add diary act
+		Intent intent = new Intent(getActivity(), TravelDiaryEditActivity.class);
+		startActivityForResult(intent,ADD_DIRAY_REQUEST_CODE);
+	}
 
 	class ViewHolder {
 		public TextView baseInfoTextView;
@@ -223,16 +223,7 @@ public final class TravelDiaryFragment extends Fragment {
 		});
 
 		addDiaryBtn = (Button) view.findViewById(R.id.add_diary_btn);
-		addDiaryBtn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				//jump to add diary act
-				Intent intent = new Intent(getActivity(), MyTravelDiaryCenterActivity.class);
-				startActivity(intent);
-			}
-		});
+		addDiaryBtn.setOnClickListener(this);
 
 	}
 
@@ -255,16 +246,35 @@ public final class TravelDiaryFragment extends Fragment {
 		return stringBuilder.toString();
 	}
 
+
+	@Override
+	protected void onLoginActivityResult(int resultCode, Intent data) {
+		if(Activity.RESULT_OK == resultCode) {
+			onClick(null);
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (ADD_DIRAY_REQUEST_CODE == requestCode && Activity.RESULT_OK == resultCode) {
+			//新的游记添加完成 == >  重新刷新列表
+			refreshDiaryList();
+		}
+	}
+
+	//重新刷新游记列表
+	private void refreshDiaryList() {
+		//待完成。
+
+	}
+
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 	}
 
-	@Override
-	public void onDestroyView() {
-		// TODO Auto-generated method stub
-		super.onDestroyView();
-	}
+
 
 }
