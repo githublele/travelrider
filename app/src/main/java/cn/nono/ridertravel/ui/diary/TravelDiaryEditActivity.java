@@ -37,6 +37,7 @@ import cn.nono.ridertravel.adapter.DiaryEditPhotoAdapter.ViewHolder;
 import cn.nono.ridertravel.bean.DiaryBean;
 import cn.nono.ridertravel.bean.DiarySheetBean;
 import cn.nono.ridertravel.bean.PhotoBean;
+import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.debug.LogSimple;
 import cn.nono.ridertravel.debug.ToastUtil;
 import cn.nono.ridertravel.ui.AddPhotoDescriptionActivity;
@@ -302,7 +303,7 @@ public class TravelDiaryEditActivity extends BaseNoTitleActivity implements
 		uploadAlertDialog = builder.create();
 		uploadAlertDialog.show();
 
-		uploadToNet(diary,AVUser.getCurrentUser());
+		uploadToNet(diary, (AVMUser) AVUser.getCurrentUser());
 
 	}
 
@@ -320,7 +321,7 @@ Handler handler = new Handler() {
 	}
 };
 
-	private void uploadToNet(DiaryBean diary, AVUser currentUser) {
+	private void uploadToNet(DiaryBean diary, AVMUser currentUser) {
 
 	new UploadThread(diary,currentUser,handler, new UploadThread.SaveCallBack() {
 		@Override

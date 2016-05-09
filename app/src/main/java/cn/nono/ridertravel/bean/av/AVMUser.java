@@ -15,7 +15,11 @@ public class AVMUser extends AVUser{
     public final static String TRAVEL_MAP_PATH_KEY = "TravelMapPaths";
     public final static String CREATE_ACTIVITY_RELATION_KEY = "CreateTravelActivitys";
     public final static String BASE_INFO_KEY = "baseInfoPointer";
+    public final static String CREATE_DIARY_RELATION_KEY = "CreateDiaries";
 
+    public AVRelation<AVTravelDiary> getCreateDiariesRelation() {
+        return getRelation(CREATE_DIARY_RELATION_KEY);
+    }
 
     public AVBaseUserInfo getBaseInfo() {
         return getAVObject(BASE_INFO_KEY);

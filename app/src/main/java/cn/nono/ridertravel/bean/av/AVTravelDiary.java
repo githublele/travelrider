@@ -2,6 +2,7 @@ package cn.nono.ridertravel.bean.av;
 
 import android.annotation.SuppressLint;
 
+import com.avos.avoscloud.AVACL;
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
@@ -26,6 +27,15 @@ public class AVTravelDiary extends AVObject{
     public static final String DIARYCONTENT_RELATIONS_KEY = "diaryContents";
 
 //    private final String _key = "";
+
+
+    public AVTravelDiary() {
+        super();
+        AVACL avacl = new AVACL();
+        avacl.setPublicReadAccess(true);
+        avacl.setPublicWriteAccess(true);
+        setACL(avacl);
+    }
 
 
     public AVRelation<AVTravelDiaryContent> getDiaryContents() {

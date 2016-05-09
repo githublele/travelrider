@@ -2,6 +2,7 @@ package cn.nono.ridertravel.bean.av;
 
 import android.annotation.SuppressLint;
 
+import com.avos.avoscloud.AVACL;
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVRelation;
@@ -52,6 +53,14 @@ public class AVTravelActivity extends AVObject{
 //    Long    endDateMillisTime;
 //    String  phone;
 //    Integer activityState;
+
+    public AVTravelActivity() {
+        super();
+        AVACL avacl = new AVACL();
+        avacl.setPublicWriteAccess(true);
+        avacl.setPublicReadAccess(true);
+        setACL(avacl);
+    }
 
     public AVBaseUserInfo getIsserBaseInfo() {
         return getAVObject(ISSUER_BASE_INFO_POINTER_KEY);

@@ -2,6 +2,7 @@ package cn.nono.ridertravel.bean.av;
 
 import android.annotation.SuppressLint;
 
+import com.avos.avoscloud.AVACL;
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
@@ -25,6 +26,10 @@ public class AVBaseUserInfo extends AVObject {
     public AVBaseUserInfo() {
         super();
         setSexMan();
+        AVACL avacl = new AVACL();
+        avacl.setPublicReadAccess(true);
+        avacl.setPublicWriteAccess(true);
+        setACL(avacl);
     }
 
     public void setHead(AVFile headFile) {

@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.GetCallback;
@@ -361,8 +362,19 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
         AVTravelMapPath path = data.getParcelableExtra(TravelMapPathActivity.MAP_PATH_KEY);
         if(null == path)
             return;
-        travelPathButton.setText(path.getName());
-        mAVAcitivity.setTravelMapPath(path);
+
+        String pathName = path.getName();
+
+        try {
+            path = AVObject.createWithoutData(AVTravelMapPath.class,path.getObjectId());
+            mAVAcitivity.setTravelMapPath(path);
+            travelPathButton.setText(pathName);
+        } catch (AVException e) {
+            e.printStackTrace();
+        }
+
+
+
     }
 
     private void introduceInputResult(int resultCode, Intent data) {

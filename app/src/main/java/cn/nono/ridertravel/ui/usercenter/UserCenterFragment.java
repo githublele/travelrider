@@ -24,7 +24,7 @@ import cn.nono.ridertravel.R;
 import cn.nono.ridertravel.bean.av.AVBaseUserInfo;
 import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.debug.ToastUtil;
-import cn.nono.ridertravel.ui.diary.MyTravelDiaryFragmentT;
+import cn.nono.ridertravel.ui.diary.MyTravelDiaryFragment;
 import cn.nono.ridertravel.util.ImageLoaderOptionsSetting;
 
 /**
@@ -73,6 +73,7 @@ public class UserCenterFragment extends Fragment implements RadioGroup.OnChecked
             public void done(AVBaseUserInfo avBaseUserInfo, AVException e) {
                 if(null != e) {
                     ToastUtil.toastShort(getActivity(),"网络获取数据异常 "+e.getCode());
+                    e.printStackTrace();
                     return;
                 }
 
@@ -105,7 +106,7 @@ public class UserCenterFragment extends Fragment implements RadioGroup.OnChecked
 
         if(R.id.my_diary_radioButton == checkedId) {
             if(null == mMyDiaryFragment) {
-                mMyDiaryFragment = new MyTravelDiaryFragmentT();
+                mMyDiaryFragment = new MyTravelDiaryFragment();
                 tc.add(R.id.content_ll, mMyDiaryFragment);
             }
             mCurrentShowFragment = mMyDiaryFragment;

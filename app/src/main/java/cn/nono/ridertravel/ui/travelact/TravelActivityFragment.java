@@ -62,12 +62,12 @@ public class TravelActivityFragment extends Fragment implements View.OnClickList
                 viewHolder = new TravelActivityFragment.ViewHolder();
                 convertView = LayoutInflater.from(getActivity()).inflate(R.layout.item_travel_act_list,null);
                 viewHolder.actStateTextView = (TextView) convertView.findViewById(R.id.activity_state_tv);
-                viewHolder.actHeadlineTextView = (TextView) convertView.findViewById(R.id.activity_start_date_tv);
+                viewHolder.actHeadlineTextView = (TextView) convertView.findViewById(R.id.diary_headline_tv);
                 viewHolder.actStartDateTextView = (TextView) convertView.findViewById(R.id.activity_start_date_tv);
                 viewHolder.actEndDateTextView = (TextView) convertView.findViewById(R.id.activity_end_date_tv);
                 viewHolder.actIssuerTextView = (TextView) convertView.findViewById(R.id.activity_issuer_tv);
                 viewHolder.actFallInPlaceTextView = (TextView) convertView.findViewById(R.id.activity_fall_in_place_tv);
-                viewHolder.actMapImageView = (ImageView) convertView.findViewById(R.id.activity_map_imageView);
+                viewHolder.actMapImageView = (ImageView) convertView.findViewById(R.id.map_thumbnail_imageview);
                 convertView.setTag(viewHolder);
             }
 

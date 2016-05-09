@@ -5,7 +5,6 @@ import android.os.Handler;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVRelation;
-import com.avos.avoscloud.AVUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +12,7 @@ import java.util.List;
 import cn.nono.ridertravel.bean.DiaryBean;
 import cn.nono.ridertravel.bean.DiarySheetBean;
 import cn.nono.ridertravel.bean.PhotoBean;
+import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.bean.av.AVTravelDiary;
 import cn.nono.ridertravel.bean.av.AVTravelDiaryContent;
 
@@ -29,9 +29,9 @@ public class UploadThread extends Thread {
     SaveCallBack callBack = null;
     Handler handler;
     DiaryBean diary;
-    AVUser currentUser;
+    AVMUser currentUser;
 
-    public UploadThread(DiaryBean diary, AVUser currentUser,Handler handler,SaveCallBack saveCallBack) {
+    public UploadThread(DiaryBean diary, AVMUser currentUser, Handler handler, SaveCallBack saveCallBack) {
         super();
         this.diary = diary;
         this.currentUser = currentUser;
@@ -109,7 +109,10 @@ public class UploadThread extends Thread {
                 }
         }
 
+            avTravelDiary.setAuthorBaseUserInfo(currentUser.getBaseInfo());
             avTravelDiary.save();
+            currentUser.getCreateDiariesRelation().add(avTravelDiary);
+            currentUser.save();
             if (null != callBack)
                 callBack.succeed(handler);
 

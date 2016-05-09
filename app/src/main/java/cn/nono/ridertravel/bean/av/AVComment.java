@@ -2,6 +2,7 @@ package cn.nono.ridertravel.bean.av;
 
 import android.annotation.SuppressLint;
 
+import com.avos.avoscloud.AVACL;
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;
 
@@ -20,6 +21,13 @@ public class AVComment extends AVObject {
     public final static String TRAVELACTIVITY_KEY = "TravelActivity";
 
 
+    public AVComment() {
+        super();
+        AVACL avacl = new AVACL();
+        avacl.setPublicReadAccess(true);
+        avacl.setPublicWriteAccess(true);
+        setACL(avacl);
+    }
     public AVBaseUserInfo getUserBaseInfo() {
         return getAVObject(USER_BASE_INFO_KEY);
     }

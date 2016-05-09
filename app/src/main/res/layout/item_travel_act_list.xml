@@ -1,128 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="103dp"
+    android:layout_marginLeft="7dp"
+    android:layout_marginRight="7dp"
+    android:background="@drawable/rectangle_line"
+    >
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="30dp">
-
+        android:layout_width="66dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_height="wrap_content"
             android:text="[进行中]"
-            android:id="@+id/activity_state_tv" />
+            android:id="@+id/activity_state_tv"
+            android:textSize="14sp"
+            android:textColor="@color/colorOrange"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="时间:"
+            android:textColor="@color/text_color_general_gray"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text=""
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="发布人:"
+            android:textColor="@color/text_color_general_gray"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="集合地点:"
+            android:textColor="@color/text_color_general_gray"
+            />
 
+
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <TextView
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/text_color_general_black"
+        android:text="活动标题"
+        android:id="@+id/diary_headline_tv"
+        />
+        
+        <ImageView
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/diary_headline_tv"
+            android:id="@+id/map_thumbnail_imageview"
+            android:layout_width="72dp"
+            android:layout_height="103dp"
+            android:src="@drawable/icon_map_default"
+            />
+        
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="活动标题"
-            android:id="@+id/diary_headline_tv" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-        <LinearLayout
-            android:layout_weight="3"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="60dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="时间:"
-                    />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    >
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="2016:04:21 12:00"
-                        android:id="@+id/activity_start_date_tv" />
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="2016:04:21 12:00"
-                        android:id="@+id/activity_end_date_tv" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="30dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="发布人:"
-                    />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="哈哈哒"
-                    android:id="@+id/activity_issuer_tv" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="30dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="集合地点:"
-                    />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx东莞"
-                    android:ellipsize="start"
-                    android:singleLine="true"
-                    android:id="@+id/activity_fall_in_place_tv" />
-            </LinearLayout>
-        </LinearLayout>
-        <ImageView
-            android:layout_weight="2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/map_bk_b"
-            android:id="@+id/activity_map_imageView" />
-
-
-    </LinearLayout>
-
-
-
-
-
+            android:textSize="14sp"
+            android:textColor="@color/text_color_general_black"
+            android:text="2016-04-21 07:00"
+            android:id="@+id/activity_start_date_tv"
+            android:layout_below="@id/diary_headline_tv"
+            android:layout_toLeftOf="@id/map_thumbnail_imageview"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/text_color_general_black"
+            android:text="2016-04-21 07:00"
+            android:id="@+id/activity_end_date_tv"
+            android:layout_below="@id/activity_start_date_tv"
+            android:layout_toLeftOf="@id/map_thumbnail_imageview"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/text_color_general_black"
+            android:text="落仔"
+            android:id="@+id/activity_issuer_tv"
+            android:layout_below="@id/activity_end_date_tv"
+            android:layout_toLeftOf="@id/map_thumbnail_imageview"
+            />
+        <TextView
+            android:id="@+id/activity_fall_in_place_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/text_color_general_black"
+            android:text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx东莞"
+            android:ellipsize="start"
+            android:singleLine="true"
+            android:layout_below="@id/activity_issuer_tv"
+            android:layout_toLeftOf="@id/map_thumbnail_imageview"
+            />
+    </RelativeLayout>
 </LinearLayout>
