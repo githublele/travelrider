@@ -15,7 +15,7 @@
         </LinearLayout>
         <LinearLayout 
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="48dp"
             android:orientation="horizontal"
             >
             <RadioGroup
@@ -24,26 +24,29 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 >
-                <RadioButton 
+                <RadioButton
+                    style="@style/CustomBottomNavRadioBtnStle"
                     android:id="@+id/diary_radioBtn"
-                    android:layout_height="match_parent"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:drawableTop="@mipmap/icon_main_nav_diary"
                     android:text="游记"
                     />
-                <RadioButton 
+                <RadioButton
+                    style="@style/CustomBottomNavRadioBtnStle"
                    android:id="@+id/activity_radioBtn"
-                    android:layout_height="match_parent"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:drawableTop="@mipmap/icon_main_nav_diary"
                     android:text="活动"
-                    android:checked="false" />
-                <RadioButton 
-                    android:id="@+id/record_radioBtn"
-                    android:layout_height="match_parent"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="我的里程"
+                  />
+                <RadioButton
+                    style="@style/CustomBottomNavRadioBtnStle"
+                    android:drawableTop="@mipmap/icon_main_nav_diary"
+                    android:id="@+id/notification_radioBtn"
+                    android:text="通知"
+                    />
+                <RadioButton
+                    style="@style/CustomBottomNavRadioBtnStle"
+                    android:drawableTop="@mipmap/icon_main_nav_diary"
+                    android:id="@+id/user_center_radioBtn"
+                    android:text="我"
                     />
           
             </RadioGroup>

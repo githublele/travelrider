@@ -41,4 +41,18 @@
     </style>
 
 
+    <!--自定义的style -->
+    <style name="CustomBottomNavRadioBtnStle">
+        <item name="android:button">@null</item>
+        <item name="android:background">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:padding">2dp</item>
+        <item name="android:textColor">@drawable/main_nav_btn_text_color_selector</item>
+    </style>
+
+
 </resources>

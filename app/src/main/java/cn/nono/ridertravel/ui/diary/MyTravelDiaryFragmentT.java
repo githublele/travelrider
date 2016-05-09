@@ -3,7 +3,6 @@ package cn.nono.ridertravel.ui.diary;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,9 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVUser;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +24,11 @@ import java.util.List;
 import cn.nono.ridertravel.R;
 import cn.nono.ridertravel.bean.av.AVTravelDiary;
 import cn.nono.ridertravel.ui.LoginActivity;
+import cn.nono.ridertravel.util.ImageLoaderOptionsSetting;
 
 public class MyTravelDiaryFragmentT extends Fragment implements OnClickListener{
 
 	private final static int LOGIN_REQUEST_CODE = 1;
-	private DisplayImageOptions mDisplayOptions = null;
 	private Button diaryAddButton;
 	private ListView listView;
 	private List<AVTravelDiary> travelDiaries = new ArrayList<AVTravelDiary>();
@@ -69,7 +66,7 @@ public class MyTravelDiaryFragmentT extends Fragment implements OnClickListener{
 			viewHolder = (ViewHolder) convertView.getTag();
 			viewHolder.headlineTextView.setText(avTravelDiary.getHeadline());
 			viewHolder.baseInfo.setText(getDiaryBaseInfo(avTravelDiary));
-			ImageLoader.getInstance().displayImage(avTravelDiary.getCover().getUrl(), viewHolder.coverImageView,mDisplayOptions);
+			ImageLoader.getInstance().displayImage(avTravelDiary.getCover().getUrl(), viewHolder.coverImageView, ImageLoaderOptionsSetting.getConstantImageLoaderDefaultOptions());
 			return convertView;
 		}
 	};
@@ -117,19 +114,6 @@ public class MyTravelDiaryFragmentT extends Fragment implements OnClickListener{
 
 	@Override
 	public void onAttach(Context context) {
-			if(null == mDisplayOptions) {
-				mDisplayOptions = new DisplayImageOptions.Builder()
-						.showImageOnLoading(R.drawable.picture_default) //设置图片在下载期间显示的图片
-						.showImageForEmptyUri(R.drawable.picture_default_damaged)//设置图片Uri为空或是错误的时候显示的图片
-						.showImageOnFail(R.drawable.picture_default_damaged)  //设置图片加载/解码过程中错误时候显示的图片
-						.cacheInMemory(true)//设置下载的图片是否缓存在内存中
-						.cacheOnDisc(true)//设置下载的图片是否缓存在SD卡中
-						.considerExifParams(true)  //是否考虑JPEG图像EXIF参数（旋转，翻转）
-						.imageScaleType(ImageScaleType.EXACTLY_STRETCHED)//设置图片以如何的编码方式显示
-						.bitmapConfig(Bitmap.Config.RGB_565)//设置图片的解码类型//
-						.resetViewBeforeLoading(true)//设置图片在下载前是否重置，复位
-						.build();//构建完成
-			}
 			super.onAttach(context);
 	}
 

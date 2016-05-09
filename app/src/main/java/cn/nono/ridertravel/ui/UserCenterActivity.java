@@ -30,6 +30,8 @@ public class UserCenterActivity extends BaseNoTitleFragmentActivity implements R
         mRadioGroup =  (RadioGroup) findViewById(R.id.navigation_radioGroup);
         mRadioGroup.setOnCheckedChangeListener(this);
         mRadioGroup.check(R.id.my_diary_radioButton);
+
+
     }
 
 

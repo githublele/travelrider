@@ -16,13 +16,6 @@
             android:layout_height="match_parent"
             android:text="骑游" />
 
-        <Button
-            android:id="@+id/add_diary_btn"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+" />
-
         <SearchView
             android:imeOptions="actionSearch"
             android:iconifiedByDefault="false"
@@ -36,28 +29,43 @@
         <Button
             android:id="@+id/user_info"
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="XX" />
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@mipmap/icon_head_default" />
 
         <Button
             android:id="@+id/user_seting"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=">>" />
+            android:background="@mipmap/icon_setting"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            />
         
     </LinearLayout>
-<android.support.v4.view.ViewPager 
+    <android.support.v4.view.ViewPager
         android:id="@+id/viewPager" 
         android:layout_width="match_parent" 
         android:layout_height="150dp" 
-        />  
-    <ListView
-        android:id="@+id/diary_list"
+        />
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" 
-        >
-    </ListView>
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/diary_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+        </ListView>
+
+        <Button
+            android:id="@+id/add_diary_btn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/add_btn_bg_selector"
+            android:layout_gravity="right|bottom"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="24dp"
+            />
+    </FrameLayout>
+
 
 </LinearLayout>

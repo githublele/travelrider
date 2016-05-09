@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorGray"
+    >
+
+    <RelativeLayout
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:background="@color/colorLightBlue"
+
+        >
+
+
+        <ImageView
+            android:id="@+id/user_head_icon_imageview"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:src="@mipmap/icon_head_default"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="落仔"
+            android:id="@+id/user_nickname_tv"
+            android:textColor="@color/text_color_normal_white"
+            android:textSize="18sp"
+            android:layout_toRightOf="@id/user_head_icon_imageview"
+            android:layout_alignTop="@id/user_head_icon_imageview"
+            android:layout_marginTop="10dp"
+            />
+        <RadioButton
+            android:button="@null"
+            android:id="@+id/user_sex"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/user_info_sex_selector"
+            android:layout_toRightOf="@id/user_nickname_tv"
+            android:layout_alignBottom="@id/user_nickname_tv"
+            />
+
+        <ImageView
+            android:id="@+id/location_imageView"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/icon_location"
+            android:layout_toRightOf="@id/user_head_icon_imageview"
+            android:layout_below="@id/user_nickname_tv"
+            android:layout_marginTop="20dp"
+            />
+        <TextView
+            android:layout_marginTop="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/city_tv"
+            android:text="东莞"
+            android:layout_toRightOf="@id/location_imageView"
+            android:layout_alignTop="@id/location_imageView"
+            android:textColor="@color/text_color_normal_white"
+            android:textSize="12sp"
+            />
+        
+        <Button
+            android:id="@+id/user_info_edit_btn"
+            android:layout_width="24dp"
+            android:layout_height="48dp"
+            android:background="@mipmap/icon_nav_right_w"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            />
+    </RelativeLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginTop="12dp"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    >
+
+    <RadioGroup
+        android:id="@id/navigation_radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        >
+        <RadioButton
+        android:id="@+id/my_diary_radioButton"
+            android:background="@drawable/nav_btn_left_bg_selector"
+            android:textColor="@drawable/nav_btn_text_color_selector"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:button="@null"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="我的游记"
+            />
+        <RadioButton
+            android:id="@+id/diary_collection_radioButton"
+            android:background="@drawable/nav_btn_center_bg_selector"
+            android:textColor="@drawable/nav_btn_text_color_selector"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:button="@null"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="收藏游记"
+            />
+        <RadioButton
+            android:id="@+id/my_activity_radioButton"
+            android:background="@drawable/nav_btn_right_bg_selector"
+            android:textColor="@drawable/nav_btn_text_color_selector"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:button="@null"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="我的活动"
+            />
+
+    </RadioGroup>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:id="@+id/content_ll"
+        ></LinearLayout>
+
+</LinearLayout>
+
+
+
+
+
+
+
+
+
+</LinearLayout>

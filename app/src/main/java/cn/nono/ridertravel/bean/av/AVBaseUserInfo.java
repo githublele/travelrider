@@ -3,6 +3,7 @@ package cn.nono.ridertravel.bean.av;
 import android.annotation.SuppressLint;
 
 import com.avos.avoscloud.AVClassName;
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 
 /**
@@ -15,6 +16,24 @@ public class AVBaseUserInfo extends AVObject {
 //    public final static String USER_POINTER_KEY = "userPointer";
     public final static String SEX_KEY = "sex";
     public final static String SIGNATURE_KEY = "signature";
+
+    public final static String SEX_MAN = "man";
+    public final static String SEX_WOMAN = "woman";
+
+    public final static String HEAD_KEY = "head";
+
+    public AVBaseUserInfo() {
+        super();
+        setSexMan();
+    }
+
+    public void setHead(AVFile headFile) {
+        put(HEAD_KEY,headFile);
+    }
+
+    public AVFile getHead() {
+        return getAVFile(HEAD_KEY);
+    }
 
     public void setSignature(String signature) {
         put(SIGNATURE_KEY,signature);
@@ -35,6 +54,12 @@ public class AVBaseUserInfo extends AVObject {
 
     public void setSex(String sex) {
         put(SEX_KEY,sex);
+    }
+    public void setSexWoman() {
+        put(SEX_KEY,SEX_WOMAN);
+    }
+    public void setSexMan() {
+        put(SEX_KEY,SEX_MAN);
     }
 
     public String getSex(){
