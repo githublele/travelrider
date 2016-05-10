@@ -5,6 +5,7 @@
     android:layout_marginLeft="7dp"
     android:layout_marginRight="7dp"
     android:background="@drawable/rectangle_line"
+    android:layout_marginBottom="10dp"
     >
 
     <LinearLayout

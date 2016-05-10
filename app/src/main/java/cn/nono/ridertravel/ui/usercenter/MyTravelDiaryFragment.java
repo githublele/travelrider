@@ -1,4 +1,4 @@
-package cn.nono.ridertravel.ui.diary;
+package cn.nono.ridertravel.ui.usercenter;
 
 import android.content.Context;
 import android.os.Bundle;

@@ -7,41 +7,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.Volley;
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.nono.ridertravel.R;
-import cn.nono.ridertravel.RiderTravelApplication;
+import cn.nono.ridertravel.bean.av.AVBaseUserInfo;
 import cn.nono.ridertravel.bean.av.AVTravelDiary;
 import cn.nono.ridertravel.bean.av.AVTravelDiaryContent;
 import cn.nono.ridertravel.debug.ToastUtil;
 import cn.nono.ridertravel.ui.base.BaseNoTitleActivity;
+import cn.nono.ridertravel.util.ImageLoaderOptionsSetting;
 import cn.nono.ridertravel.util.StringUtil;
 
 /**
  * Created by Administrator on 2016/4/13.
  */
 public class DiaryBrowseActivity extends BaseNoTitleActivity {
-
-
-    // 声明RequestQueue
-    private RequestQueue mRequestQueue;
-    private com.android.volley.toolbox.ImageLoader mImageLoader;
-
-
-
-
-
 
     LayoutInflater layoutInflater = null;
     AVTravelDiary avTravelDiary;
@@ -72,7 +65,7 @@ public class DiaryBrowseActivity extends BaseNoTitleActivity {
                 convertView = layoutInflater.inflate(R.layout.item_diary_browse, null);
                 viewHolder = new ViewHolder();
                 viewHolder.photoDescriptionTextView = (TextView) convertView.findViewById(R.id.photo_description_tv);
-                viewHolder.photoImageView = (NetworkImageView) convertView.findViewById(R.id.photo_network_imageview);
+                viewHolder.photoImageView = (ImageView) convertView.findViewById(R.id.photo_imageview);
                 viewHolder.photoLinearLayout = (LinearLayout) convertView.findViewById(R.id.diary_sheet_content_ll);
 
                 viewHolder.sheetDateTextView = (TextView) convertView.findViewById(R.id.diary_sheet_date_tv);
@@ -109,8 +102,7 @@ public class DiaryBrowseActivity extends BaseNoTitleActivity {
                 }
 
                 if(null != diaryContent.getPhoto()) {
-                    viewHolder.photoImageView.setDefaultImageResId(R.mipmap.ic_launcher);
-                    viewHolder.photoImageView.setImageUrl(diaryContent.getPhoto().getUrl(),mImageLoader);
+                    ImageLoader.getInstance().displayImage(diaryContent.getPhoto().getUrl(),viewHolder.photoImageView,ImageLoaderOptionsSetting.getConstantImageLoaderDefaultOptions());
                     if( viewHolder.photoImageView.getVisibility() != View.VISIBLE)
                         viewHolder.photoImageView.setVisibility(View.VISIBLE);
                 } else {
@@ -135,27 +127,72 @@ public class DiaryBrowseActivity extends BaseNoTitleActivity {
         public TextView sheetDateTextView;
 
         public LinearLayout photoLinearLayout;
-        public NetworkImageView photoImageView;
+        public ImageView photoImageView;
         public TextView photoDescriptionTextView;
     }
 
 
+
+
     ProgressDialog progressDialog = null;
+
+
+    //listView 头部的一些View
+    private ImageView mAuthorHeadImageView;
+    private ImageView mDiaryCoverImageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         avTravelDiary = getIntent().getParcelableExtra("avTravelDiary");
-        if(null == avTravelDiary)
+        if(null == avTravelDiary) {
             finish();
+            return;
+        }
         setContentView(R.layout.activity_diary_browse);
-
-        // 实例化请求队列
-        mRequestQueue = Volley.newRequestQueue(this);
-        // 实例化图片加载器
-        mImageLoader = new com.android.volley.toolbox.ImageLoader(mRequestQueue, ((RiderTravelApplication)getApplication()).getDiskBitmapCache());
 
         layoutInflater = LayoutInflater.from(this);
         diaryContentListView = (ListView) findViewById(R.id.diary_content_listview);
+        //添加listview head　和　foot
+
+        //添加listView 头部
+        View headView = layoutInflater.inflate(R.layout.item_diary_browse_head,null);
+        mAuthorHeadImageView = (ImageView) headView.findViewById(R.id.head_icon_imageview);
+        mDiaryCoverImageView = (ImageView) headView.findViewById(R.id.diary_cover_imageview);
+        AVFile coverFile = avTravelDiary.getCover();
+        if(null != coverFile) {
+            ImageLoader.getInstance().displayImage(coverFile.getUrl(),mDiaryCoverImageView, ImageLoaderOptionsSetting.getConstantImageLoaderDefaultOptions());
+        }
+
+        AVBaseUserInfo avBaseUserInfo = avTravelDiary.getAuthorBaseInfo();
+        if(null != avBaseUserInfo) {
+            AVQuery.getQuery(AVBaseUserInfo.class).getInBackground(avBaseUserInfo.getObjectId(), new GetCallback<AVBaseUserInfo>() {
+                @Override
+                public void done(AVBaseUserInfo avBaseUserInfo, AVException e) {
+                    if(null != e) {
+                        ToastUtil.toastShort(DiaryBrowseActivity.this, "网络异常" + e.getCode());
+                        e.printStackTrace();
+                        return;
+                    }
+                    if(null != avBaseUserInfo) {
+                        AVFile headFile = avBaseUserInfo.getHead();
+                        if(null != headFile) {
+                            ImageLoader.getInstance().displayImage(headFile.getUrl(),mAuthorHeadImageView,ImageLoaderOptionsSetting.getConstantImageLoaderDefaultOptions());
+                        }
+                    }
+                }
+            });
+        }
+
+
+        //头部不可点击
+        diaryContentListView.addHeaderView(headView,null,false);
+        View footView = layoutInflater.inflate(R.layout.item_diary_browse_foot,null);
+        diaryContentListView.addFooterView(footView,null,false);
+
+
+
+
+
         diaryContentListView.setAdapter(baseAdapter);
 
         progressDialog = new ProgressDialog(this);
@@ -191,7 +228,6 @@ public class DiaryBrowseActivity extends BaseNoTitleActivity {
 
     @Override
     protected void onDestroy() {
-        mRequestQueue.stop();
         super.onDestroy();
     }
 }

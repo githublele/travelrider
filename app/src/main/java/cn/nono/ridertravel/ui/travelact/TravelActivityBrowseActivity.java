@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.avos.avoscloud.AVACL;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVGeoPoint;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
@@ -472,12 +473,15 @@ class ViewHolderCommemt {
         }
     }
 
+    private AVMUser mAVuser = null;
     private void joinAct() {
         AVMUser user = (AVMUser) AVUser.getCurrentUser();
         if(null == user) {
             login();
             return;
         }
+        mAVuser = user;
+
         Long actRegistDeadline = mTravelAct.getRegistrationDeadline();
         if(actRegistDeadline == null || actRegistDeadline.longValue() <= 0l) {
             ToastUtil.toastLong(TravelActivityBrowseActivity.this,"报名已经截止，加入失败。");
@@ -490,7 +494,7 @@ class ViewHolderCommemt {
             return;
         }
 
-        AVBaseUserInfo baseUserInfo = getAplicationBaseUserInfoCache();
+        final AVBaseUserInfo baseUserInfo = getAplicationBaseUserInfoCache();
         if (null == baseUserInfo) {
             showProgressDialg();
             AVQuery<AVBaseUserInfo> query = AVQuery.getQuery(AVBaseUserInfo.class);
@@ -511,21 +515,53 @@ class ViewHolderCommemt {
             return;
         }
 
-        mTravelAct.getParticipatorsBaseInfo().add(baseUserInfo);
-        showProgressDialg("加入该活动...");
+        mTravelAct.getParticipatorsBaseInfo().getQuery().whereEqualTo(AVBaseUserInfo.OBJECT_ID,baseUserInfo.getObjectId())
+                .getFirstInBackground(new GetCallback<AVBaseUserInfo>() {
+                    @Override
+                    public void done(AVBaseUserInfo avBaseUserInfo, AVException e) {
+                        if(null != e) {
+                            ToastUtil.toastShort(TravelActivityBrowseActivity.this,"连接服务器失败"+e.getCode());
+                            e.printStackTrace();
+                            return;
+                        }
 
-        mTravelAct.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-                hideProgressDialg();
-                if(null == e) {
-                    ToastUtil.toastLong(TravelActivityBrowseActivity.this,"加入成功");
-                }else {
-                    e.printStackTrace();
-                    ToastUtil.toastLong(TravelActivityBrowseActivity.this,"加入失败");
-                }
-            }
-        });
+                        if (null == avBaseUserInfo) {
+                            try {
+
+                                showProgressDialg("加入该活动...");
+
+                                //由于leanclude 没有事务支持。好像只能通过云代码来实现，所以暂时这个问题忽略。走业务流程。
+                                AVTravelActivity travelActivity = AVObject.createWithoutData(AVTravelActivity.class,mTravelAct.getObjectId());
+                                mAVuser.getJoinedTravelActivitysRelation().add(travelActivity);
+                                //。。。
+                                mAVuser.saveInBackground();
+
+                                travelActivity.getParticipatorsBaseInfo().add(baseUserInfo);
+                                travelActivity.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(AVException e) {
+                                        hideProgressDialg();
+                                        if(null == e) {
+                                            ToastUtil.toastLong(TravelActivityBrowseActivity.this,"加入成功");
+                                        }else {
+                                            e.printStackTrace();
+                                            ToastUtil.toastLong(TravelActivityBrowseActivity.this,"加入失败"+e.getCode());
+                                        }
+                                        hideProgressDialg();
+                                    }
+                                });
+
+                            } catch (AVException e1) {
+                                e1.printStackTrace();
+                                hideProgressDialg();
+                            }
+
+
+                        } else {
+                            ToastUtil.toastShort(TravelActivityBrowseActivity.this,"你已参加本次活动,无需再次参加.");
+                        }
+                    }
+                });
 
     }
 

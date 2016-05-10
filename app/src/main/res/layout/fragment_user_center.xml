@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorGray"
+    android:background="@color/globalBkColor"
     >
 
     <RelativeLayout
@@ -78,7 +78,8 @@
 
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:layout_height="0dp"
     android:orientation="vertical"
     android:layout_marginTop="12dp"
     android:paddingStart="12dp"
@@ -115,9 +116,10 @@
             android:layout_height="match_parent"
             android:text="收藏游记"
             />
+
         <RadioButton
-            android:id="@+id/my_activity_radioButton"
-            android:background="@drawable/nav_btn_right_bg_selector"
+            android:id="@+id/act_i_created_radioButton"
+            android:background="@drawable/nav_btn_center_bg_selector"
             android:textColor="@drawable/nav_btn_text_color_selector"
             android:textSize="14sp"
             android:gravity="center"
@@ -128,10 +130,24 @@
             android:text="我的活动"
             />
 
+        <RadioButton
+            android:id="@+id/act_joined_radioButton"
+            android:background="@drawable/nav_btn_right_bg_selector"
+            android:textColor="@drawable/nav_btn_text_color_selector"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:button="@null"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="参与活动"
+            />
+
     </RadioGroup>
     <LinearLayout
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         android:id="@+id/content_ll"
         ></LinearLayout>

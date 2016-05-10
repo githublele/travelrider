@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+<ImageView
+    android:layout_width="156dp"
+    android:layout_height="96dp"
+    android:src="@drawable/picture_default"
+    android:id="@+id/diary_cover_imageview"
+    />
+    <RelativeLayout
+        android:layout_marginLeft="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        >
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_general_black"
+            android:textSize="20sp"
+            android:text="威尼斯"
+            android:id="@+id/diary_headline_tv"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_general_gray"
+            android:text="2016.04.22"
+            android:textSize="15sp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/diary_start_date_tv"
+            />
+        <TextView
+            android:id="@+id/diary_author_nickname_tv"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_general_gray"
+            android:text="一条鱼"
+            android:layout_alignParentLeft="true"
+            android:layout_above="@id/diary_start_date_tv"
+            />
+
+        <TextView
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:text="99999"
+            android:id="@+id/praise_times_tv"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_praise"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@id/praise_times_tv"
+            />
+    </RelativeLayout>
+
+</LinearLayout>

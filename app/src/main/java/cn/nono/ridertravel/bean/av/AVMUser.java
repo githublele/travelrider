@@ -11,11 +11,16 @@ import com.avos.avoscloud.AVUser;
 @SuppressLint("ParcelCreator")
 public class AVMUser extends AVUser{
 
-    public final static String JOINED_ACTIVITY_RELATION_KEY = "TravelActivitys";
+    public final static String JOINED_ACTIVITY_RELATION_KEY = "ActivitysJoined";
     public final static String TRAVEL_MAP_PATH_KEY = "TravelMapPaths";
-    public final static String CREATE_ACTIVITY_RELATION_KEY = "CreateTravelActivitys";
+    public final static String CREATE_ACTIVITY_RELATION_KEY = "ActivitysCreated";
     public final static String BASE_INFO_KEY = "baseInfoPointer";
     public final static String CREATE_DIARY_RELATION_KEY = "CreateDiaries";
+    public final static String COLLECTION_DIARY_RELATION_KEY = "CollectionDiaries";
+
+    public AVRelation<AVTravelDiary> getCollectionDiariesRelation() {
+        return getRelation(COLLECTION_DIARY_RELATION_KEY);
+    }
 
     public AVRelation<AVTravelDiary> getCreateDiariesRelation() {
         return getRelation(CREATE_DIARY_RELATION_KEY);

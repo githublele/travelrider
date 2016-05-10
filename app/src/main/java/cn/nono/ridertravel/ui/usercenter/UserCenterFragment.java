@@ -1,5 +1,6 @@
 package cn.nono.ridertravel.ui.usercenter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,7 +25,7 @@ import cn.nono.ridertravel.R;
 import cn.nono.ridertravel.bean.av.AVBaseUserInfo;
 import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.debug.ToastUtil;
-import cn.nono.ridertravel.ui.diary.MyTravelDiaryFragment;
+import cn.nono.ridertravel.ui.UserInfoActivity;
 import cn.nono.ridertravel.util.ImageLoaderOptionsSetting;
 
 /**
@@ -33,11 +34,14 @@ import cn.nono.ridertravel.util.ImageLoaderOptionsSetting;
 public class UserCenterFragment extends Fragment implements RadioGroup.OnCheckedChangeListener,View.OnClickListener{
 
     private RadioGroup mRadioGroup;
+
     private Fragment mMyDiaryFragment = null;
-    private Fragment mDiaryCollectionFragment = null;
-    private Fragment mMyActivityFragment = null;
+    private MyTravelDiaryCollectionFragment mDiaryCollectionFragment = null;
+    private ActivityICreatedFragment mActivityICreatedFragment = null;
+    private ActivityJoinedFragment mActivityJoinedFragment = null;
 
     private Fragment mCurrentShowFragment = null;
+
     private TextView mUserNickname;
     private ImageView mUserHeadImageView;
     private RadioButton mUserSexRadioButton;
@@ -111,31 +115,37 @@ public class UserCenterFragment extends Fragment implements RadioGroup.OnChecked
             }
             mCurrentShowFragment = mMyDiaryFragment;
         }
-//后期再把这个补上
-        /*
         else if (R.id.diary_collection_radioButton == checkedId) {
             if(null == mDiaryCollectionFragment) {
-                mDiaryCollectionFragment = new ?();
-                tc.add(R.id.content, mDiaryCollectionFragment);
+                mDiaryCollectionFragment = new MyTravelDiaryCollectionFragment();
+                tc.add(R.id.content_ll, mDiaryCollectionFragment);
             }
             mCurrentShowFragment = mDiaryCollectionFragment;
         }
-        //R.id.my_activity_radioButton
-        else {
-            if(null == mMyActivityFragment) {
-                mMyActivityFragment = new ?();
-                tc.add(R.id.content, mMyActivityFragment);
+
+        else if (R.id.act_i_created_radioButton == checkedId) {
+            if(null == mActivityICreatedFragment) {
+                mActivityICreatedFragment = new ActivityICreatedFragment();
+                tc.add(R.id.content_ll, mActivityICreatedFragment);
             }
-            mCurrentShowFragment = mMyActivityFragment;
+            mCurrentShowFragment = mActivityICreatedFragment;
+
         }
-        */
+        //R.id.act_joined_radioButton
+        else {
+            if(null == mActivityJoinedFragment) {
+                mActivityJoinedFragment = new ActivityJoinedFragment();
+                tc.add(R.id.content_ll, mActivityJoinedFragment);
+            }
+            mCurrentShowFragment = mActivityJoinedFragment;
+        }
 
         tc.show(mCurrentShowFragment).commit();
     }
 
     @Override
     public void onClick(View v) {
-        //用户信息编辑 待完成
-        ToastUtil.toastShort(getActivity(),"构建中。。。。");
+        Intent intent = new Intent(getActivity(), UserInfoActivity.class);
+        startActivity(intent);
     }
 }
