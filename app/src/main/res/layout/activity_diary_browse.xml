@@ -32,7 +32,7 @@
             android:layout_height="30dp"
             android:button="@null"
             android:background="@drawable/zan_btn_selector"
-            android:id="@+id/zan_radioButton"
+            android:id="@+id/zan_checkBox"
             android:layout_alignParentRight="true"
             android:layout_marginRight="40dp"
             />
@@ -40,7 +40,7 @@
         <CheckBox
             android:button="@null"
             android:checked="false"
-            android:id="@+id/collect_radioButton"
+            android:id="@+id/collect_checkBox"
             android:layout_marginRight="120dp"
             android:layout_alignParentRight="true"
             android:layout_width="30dp"

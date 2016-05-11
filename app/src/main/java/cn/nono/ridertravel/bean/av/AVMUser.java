@@ -16,6 +16,7 @@ public class AVMUser extends AVUser{
     public final static String CREATE_ACTIVITY_RELATION_KEY = "ActivitysCreated";
     public final static String BASE_INFO_KEY = "baseInfoPointer";
     public final static String CREATE_DIARY_RELATION_KEY = "CreateDiaries";
+
     public final static String COLLECTION_DIARY_RELATION_KEY = "CollectionDiaries";
 
     public AVRelation<AVTravelDiary> getCollectionDiariesRelation() {

@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -14,7 +14,9 @@ import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -24,6 +26,7 @@ import java.util.List;
 
 import cn.nono.ridertravel.R;
 import cn.nono.ridertravel.bean.av.AVBaseUserInfo;
+import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.bean.av.AVTravelDiary;
 import cn.nono.ridertravel.bean.av.AVTravelDiaryContent;
 import cn.nono.ridertravel.debug.ToastUtil;
@@ -118,10 +121,6 @@ public class DiaryBrowseActivity extends BaseNoTitleActivity {
     };
 
     class ViewHolder {
-        public Button location_btn;
-        public Button like_btn;
-
-
         public LinearLayout sheetLinearLayout;
         public TextView sheetDaySortTextView;
         public TextView sheetDateTextView;
@@ -136,10 +135,21 @@ public class DiaryBrowseActivity extends BaseNoTitleActivity {
 
     ProgressDialog progressDialog = null;
 
+    //没有登录的用户只能浏览游记。
+    private AVMUser avmUser = null;
 
     //listView 头部的一些View
     private ImageView mAuthorHeadImageView;
     private ImageView mDiaryCoverImageView;
+
+    private CheckBox mCollectCheckBox;
+    //网上数据库 对于本游记 是否已经做了收藏
+    private boolean mlastCollectStateOnNet = false;
+    private CheckBox mPraiseCheckBox;
+    //网上数据库 对于本游记 是否已经做了点赞
+    private boolean mlastPraiseStateOnNet = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,6 +160,14 @@ public class DiaryBrowseActivity extends BaseNoTitleActivity {
         }
         setContentView(R.layout.activity_diary_browse);
 
+        initView();
+        loadNetData();
+    }
+
+    private void initView() {
+        mCollectCheckBox = (CheckBox) findViewById(R.id.collect_checkBox);
+        mPraiseCheckBox = (CheckBox) findViewById(R.id.zan_checkBox);
+
         layoutInflater = LayoutInflater.from(this);
         diaryContentListView = (ListView) findViewById(R.id.diary_content_listview);
         //添加listview head　和　foot
@@ -158,6 +176,19 @@ public class DiaryBrowseActivity extends BaseNoTitleActivity {
         View headView = layoutInflater.inflate(R.layout.item_diary_browse_head,null);
         mAuthorHeadImageView = (ImageView) headView.findViewById(R.id.head_icon_imageview);
         mDiaryCoverImageView = (ImageView) headView.findViewById(R.id.diary_cover_imageview);
+
+
+        //头部不可点击
+        diaryContentListView.addHeaderView(headView,null,false);
+        View footView = layoutInflater.inflate(R.layout.item_diary_browse_foot,null);
+        diaryContentListView.addFooterView(footView,null,false);
+
+        diaryContentListView.setAdapter(baseAdapter);
+    }
+
+    private void loadNetData() {
+
+        //加载封面信息（填充listView head view）
         AVFile coverFile = avTravelDiary.getCover();
         if(null != coverFile) {
             ImageLoader.getInstance().displayImage(coverFile.getUrl(),mDiaryCoverImageView, ImageLoaderOptionsSetting.getConstantImageLoaderDefaultOptions());
@@ -184,17 +215,58 @@ public class DiaryBrowseActivity extends BaseNoTitleActivity {
         }
 
 
-        //头部不可点击
-        diaryContentListView.addHeaderView(headView,null,false);
-        View footView = layoutInflater.inflate(R.layout.item_diary_browse_foot,null);
-        diaryContentListView.addFooterView(footView,null,false);
+        //加载 收藏 + 点赞 信息（登录用户）
+        avmUser = (AVMUser) AVUser.getCurrentUser();
+        if(null != avmUser) {
+            AVQuery<AVMUser> queryCollect = avTravelDiary.getCollectedUsers().getQuery();
+            queryCollect.whereEqualTo(AVObject.OBJECT_ID,avmUser.getObjectId());
+            queryCollect.getFirstInBackground(new GetCallback<AVMUser>() {
+                @Override
+                public void done(AVMUser avmUser, AVException e) {
+                    if(null != e && e.getCode() != AVException.OBJECT_NOT_FOUND) {
+                        ToastUtil.toastShort(DiaryBrowseActivity.this,"网络数据获取异常"+e.getCode());
+                        e.printStackTrace();
+                        return;
+                    }
+
+                    //没有收藏
+                    if (null == avmUser) {
+                        mlastCollectStateOnNet = false;
+                        mCollectCheckBox.setChecked(false);
+                    } else {
+                        mlastCollectStateOnNet = true;
+                        mCollectCheckBox.setChecked(true);
+                    }
+                }
+            });
 
 
+            AVQuery<AVMUser> queryPraise = avTravelDiary.getPraiseUsers().getQuery();
+            queryPraise.whereEqualTo(AVObject.OBJECT_ID,avmUser.getObjectId());
 
+            queryPraise.getFirstInBackground(new GetCallback<AVMUser>() {
+                @Override
+                public void done(AVMUser avmUser, AVException e) {
+                    if(null != e && e.getCode() != AVException.OBJECT_NOT_FOUND) {
+                        ToastUtil.toastShort(DiaryBrowseActivity.this,"网络数据获取异常"+e.getCode());
+                        e.printStackTrace();
+                        return;
+                    }
 
+                    //没有点赞
+                    if (null == avmUser) {
+                        mlastPraiseStateOnNet = false;
+                        mPraiseCheckBox.setChecked(false);
+                    } else {
+                        mlastPraiseStateOnNet = true;
+                        mPraiseCheckBox.setChecked(true);
+                    }
+                }
+            });
 
-        diaryContentListView.setAdapter(baseAdapter);
+        }
 
+        //加载游记具体信息。
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("加载中。。。。");
         progressDialog.setCancelable(false);
@@ -222,12 +294,49 @@ public class DiaryBrowseActivity extends BaseNoTitleActivity {
                 }
             }
         });
-
-
     }
 
     @Override
     protected void onDestroy() {
+        if (null != avmUser) {
+//由于没有事务！！！！！所以多表操作出现异常无法回滚！！！  期待云代码实现多表操作
+            try {
+                AVTravelDiary avDiary = AVObject.createWithoutData(AVTravelDiary.class,avTravelDiary.getObjectId());
+
+                Integer a = -1;
+                if (mlastPraiseStateOnNet != mPraiseCheckBox.isChecked()) {
+                    if(mPraiseCheckBox.isChecked()) {
+                        avDiary.getPraiseUsers().add(avmUser);
+                        avDiary.increment(AVTravelDiary.PRAISE_TIMES_KEY);
+
+                    } else {
+                        avDiary.getPraiseUsers().remove(avmUser);
+                        avDiary.increment(AVTravelDiary.PRAISE_TIMES_KEY,a);
+                    }
+                    avDiary.saveInBackground();
+
+                }
+
+                if (mlastCollectStateOnNet != mCollectCheckBox.isChecked()) {
+                    if(mCollectCheckBox.isChecked()) {
+                        avDiary.getCollectedUsers().add(avmUser);
+                        avDiary.increment(AVTravelDiary.COLLECTED_TIMES);
+                        avmUser.getCollectionDiariesRelation().add(avDiary);
+                    } else {
+                        avDiary.getCollectedUsers().remove(avmUser);
+                        avDiary.increment(AVTravelDiary.COLLECTED_TIMES,a);
+                        avmUser.getCollectionDiariesRelation().remove(avDiary);
+                    }
+                    avDiary.saveInBackground();
+                    avmUser.saveInBackground();
+                }
+
+
+            } catch (AVException e) {
+                e.printStackTrace();
+            }
+
+        }
         super.onDestroy();
     }
 }

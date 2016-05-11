@@ -21,7 +21,12 @@ public class AVTravelDiary extends AVObject{
     public static final String TRAVEL_START_DATE_KEY = "travelStartDate";
     public static final String COVER_KEY = "cover";
     public static final String DAYS_KEY = "days";
+
     public static final String PRAISE_TIMES_KEY = "praiseTimes";
+    public static final String PRAISE_USERS_RELATION_KEY ="praiseUsersRelation";
+    public static final String COLLECTED_TIMES = "collectedTimes";
+    public static final String COLLECT_USERS_RELATION = "collectUsersRelation";
+
     public static final String AUTHOR_KEY = "authorPointer";
     public final static String AUTHOR_BASE_INFO_POINTER_KEY ="authorBaseInfoPointer";
     public static final String DIARYCONTENT_RELATIONS_KEY = "diaryContents";
@@ -37,6 +42,18 @@ public class AVTravelDiary extends AVObject{
         setACL(avacl);
     }
 
+
+    public AVRelation<AVMUser> getPraiseUsers(){
+        return getRelation(PRAISE_USERS_RELATION_KEY);
+    }
+
+    public AVRelation<AVMUser> getCollectedUsers(){
+        return getRelation(COLLECT_USERS_RELATION);
+    }
+
+    public Integer getCollectedTimes() {
+        return getInt(COLLECTED_TIMES);
+    }
 
     public AVRelation<AVTravelDiaryContent> getDiaryContents() {
         return getRelation(DIARYCONTENT_RELATIONS_KEY);
