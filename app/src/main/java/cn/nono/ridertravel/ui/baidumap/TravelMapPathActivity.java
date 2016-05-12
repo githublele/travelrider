@@ -301,8 +301,6 @@ public class TravelMapPathActivity extends BaseNoTitleActivity implements View.O
 
         mClearInputTextBtn = (Button) findViewById(R.id.clear_input_text_btn);
         mClearInputTextBtn.setOnClickListener(this);
-        mSearchBtn = (Button) findViewById(R.id.search_btn);
-        mSearchBtn.setOnClickListener(this);
         mOkButton = (Button) findViewById(R.id.select_btn);
         mOkButton.setOnClickListener(this);
         mSearchInputEditText = (EditText) findViewById(R.id.search_input_edittext);
@@ -471,9 +469,6 @@ public class TravelMapPathActivity extends BaseNoTitleActivity implements View.O
                 break;
             case  R.id.clear_input_text_btn:
                 clearInputText();
-                break;
-            case R.id.search_btn:
-                searchSuggestion(mSearchInputEditText.getText().toString());
                 break;
             case R.id.select_btn:
                 saveMapPath();

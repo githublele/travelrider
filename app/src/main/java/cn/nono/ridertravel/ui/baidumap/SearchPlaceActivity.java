@@ -1,8 +1,9 @@
 package cn.nono.ridertravel.ui.baidumap;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -46,11 +48,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.nono.ridertravel.R;
+import cn.nono.ridertravel.ui.base.BaseNoTitleActivity;
 
 /**
  * Created by Administrator on 2016/4/6.
  */
-public class SearchPlaceActivity extends Activity implements View.OnClickListener{
+public class SearchPlaceActivity extends BaseNoTitleActivity implements View.OnClickListener{
 
     public static final    String LAT_KEY = "lat";
     public static final    String LNG_KEY = "lng";
@@ -59,7 +62,6 @@ public class SearchPlaceActivity extends Activity implements View.OnClickListene
     ListView mPlaceSuggestionListView;
     Button mOkButton;
     Button mClearInputTextBtn;
-    Button mSearchBtn;
     EditText mSearchInputEditText;
     MapView mMapView;
     BaiduMap mBaiduMap;
@@ -126,12 +128,30 @@ public class SearchPlaceActivity extends Activity implements View.OnClickListene
 
         @Override
         public void afterTextChanged(Editable s) {
-            if(s.toString().isEmpty())
+            if(s.toString().isEmpty()) {
+                if(mClearInputTextBtn.getVisibility() != View.GONE) {
+                    mClearInputTextBtn.setVisibility(View.GONE);
+                }
                 return;
+            }
             placeSuggestionFromNet(s.toString());
             hideBaiduMap();
+            if(mClearInputTextBtn.getVisibility() == View.GONE) {
+                mClearInputTextBtn.setVisibility(View.VISIBLE);
+            }
+            progressStartAuto();
         }
     };
+
+    //自动读条
+    private void progressStartAuto() {
+           Message msg = handler.obtainMessage();
+           msg.what = 0;
+            //延时200ms 发一次
+           handler.sendMessageDelayed(msg,200);
+    }
+
+    private ProgressBar mProgressBar;
 
     private void placeSuggestionFromNet(String str) {
         if(null == str || str.isEmpty())
@@ -167,6 +187,8 @@ public class SearchPlaceActivity extends Activity implements View.OnClickListene
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,url,null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
+                handler.removeMessages(0);
+                mProgressBar.setProgress(0);
                 Log.i("xx",jsonObject.toString());
                 if(null == jsonObject)
                     return;
@@ -193,6 +215,8 @@ public class SearchPlaceActivity extends Activity implements View.OnClickListene
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 Log.i("xx",volleyError.getMessage());
+                handler.removeMessages(0);
+                mProgressBar.setProgress(0);
             }
         });
 
@@ -289,8 +313,6 @@ public class SearchPlaceActivity extends Activity implements View.OnClickListene
 
         mClearInputTextBtn = (Button) findViewById(R.id.clear_input_text_btn);
         mClearInputTextBtn.setOnClickListener(this);
-        mSearchBtn = (Button) findViewById(R.id.search_btn);
-        mSearchBtn.setOnClickListener(this);
         mOkButton = (Button) findViewById(R.id.select_btn);
         mOkButton.setOnClickListener(this);
         mSearchInputEditText = (EditText) findViewById(R.id.search_input_edittext);
@@ -317,7 +339,27 @@ public class SearchPlaceActivity extends Activity implements View.OnClickListene
             }
         });
 
+       mProgressBar = (ProgressBar) findViewById(R.id.progress_progressBar);
+       mProgressBar.setProgress(0);
+
+
     }
+
+    int mProgress = 0;
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == 0) {
+               mProgress = mProgressBar.getProgress();
+                mProgress += 7;
+                mProgressBar.setProgress(mProgress);
+                if(mProgress <= 90) {
+                    progressStartAuto();
+                }
+            }
+
+        }
+    };
 
     private void showBaiduMap() {
         if(mMapLinearLayoutVisble)
@@ -400,9 +442,6 @@ public class SearchPlaceActivity extends Activity implements View.OnClickListene
                 break;
             case  R.id.clear_input_text_btn:
                 clearInputText();
-                break;
-            case R.id.search_btn:
-                searchPlaceInfo();
                 break;
             case R.id.select_btn:
                 selectPlace();

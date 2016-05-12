@@ -19,5 +19,35 @@
         <item name="android:textColor">@drawable/main_nav_btn_text_color_selector</item>
     </style>
 
+    <!--顶部导航栏style（统一尺寸） -->
+    <style name="CustomTopNavStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">44dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+
+    <!--活动创建文字提示style -->
+    <style name="CustomActCreateTipsTextViewStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:textColor">@color/text_color_general_gray</item>
+    </style>
+
+    <!--活动创建按钮style -->
+    <style name="CustomActCreateButtonStyle">
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:gravity">center_vertical|right</item>
+        <item name="android:background">@drawable/selectable_bk</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/text_color_general_gray</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:padding">10dp</item>
+
+    </style>
 
 </resources>

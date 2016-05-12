@@ -31,6 +31,7 @@ import cn.nono.ridertravel.ui.ContentInputActivity;
 import cn.nono.ridertravel.ui.baidumap.SearchPlaceActivity;
 import cn.nono.ridertravel.ui.baidumap.TravelMapPathActivity;
 import cn.nono.ridertravel.ui.base.BaseNoTitleActivity;
+import cn.nono.ridertravel.util.MStringUtil;
 
 /**
  * Created by Administrator on 2016/4/15.
@@ -44,8 +45,6 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
     public final static int FALL_IN_PLACE_INPUT_REQ_CODE = 4;
     public final static int PHONE_INPUT_REQ_CODE = 5;
 
-
-    Button backButton;
     Button headlineButton;
     Button introduceButton;
     Button travelPathButton;
@@ -116,8 +115,6 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
     }
 
     private void initView() {
-        backButton = (Button) findViewById(R.id.back_btn);
-        backButton.setOnClickListener(this);
         headlineButton = (Button) findViewById(R.id.headline_btn);
         headlineButton.setOnClickListener(this);
         introduceButton = (Button) findViewById(R.id.activity_introduce_btn);
@@ -132,7 +129,7 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
         actEndDateButton.setOnClickListener(this);
         registrationDeadlineButton = (Button) findViewById(R.id.registration_deadline_btn);
         registrationDeadlineButton.setOnClickListener(this);
-        phoneButton = (Button) findViewById(R.id.phone_btn);
+        phoneButton = (Button) findViewById(R.id.user_phone_btn);
         phoneButton.setOnClickListener(this);
         issueButton = (Button) findViewById(R.id.issue_btn);
         issueButton.setOnClickListener(this);
@@ -145,17 +142,16 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
         Intent intent;
         int viewId = v.getId();
         switch (viewId) {
-            case R.id.back_btn:
-                goBack();
-                break;
             case R.id.headline_btn:
                 intent = new Intent(this, ContentInputActivity.class);
+                intent.putExtra("req_code",HEADLINE_INPUT_REQ_CODE);
                 intent.putExtra(ContentInputActivity.TITLE_KEY,"标题");
                 intent.putExtra(ContentInputActivity.CONTENT_DEFAULT_KEY,mAVAcitivity.getHeadline());
                 startActivityForResult(intent,HEADLINE_INPUT_REQ_CODE);
             break;
             case R.id.activity_introduce_btn:
                 intent = new Intent(this, ContentInputActivity.class);
+                intent.putExtra("req_code",INTRODUCE_INPUT_REQ_CODE);
                 intent.putExtra(ContentInputActivity.CONTENT_DEFAULT_KEY,mAVAcitivity.getActivityIntroduce());
                 intent.putExtra(ContentInputActivity.TITLE_KEY,"活动介绍");
                 startActivityForResult(intent,INTRODUCE_INPUT_REQ_CODE);
@@ -175,25 +171,81 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
             case R.id.registration_deadline_btn:
                 showSelectTimeDlg(R.id.registration_deadline_btn);
                 break;
-            case R.id.phone_btn:
+            case R.id.user_phone_btn:
                 intent = new Intent(this, ContentInputActivity.class);
+                intent.putExtra("req_code",PHONE_INPUT_REQ_CODE);
                 intent.putExtra(ContentInputActivity.CONTENT_DEFAULT_KEY,mAVAcitivity.getPhone());
                 intent.putExtra(ContentInputActivity.TITLE_KEY,"联系电话");
                 startActivityForResult(intent,PHONE_INPUT_REQ_CODE);
                 break;
             case R.id.issue_btn:
-                createActToNet();
+                if(isEffectiveAct())
+                    createActToNet();
                 break;
             default:
                 break;
         }
     }
 
+    private boolean isEffectiveAct() {
+        if(MStringUtil.isNullEmpty(mAVAcitivity.getHeadline())) {
+            ToastUtil.toastShort(this,"没有输入标题。");
+            return false;
+        }
+        if(MStringUtil.isNullEmpty(mAVAcitivity.getActivityIntroduce())) {
+            ToastUtil.toastShort(this,"没有输入活动介绍。");
+            return false;
+        }
+
+        if(MStringUtil.isNullEmpty(mAVAcitivity.getFallInPlace())) {
+            ToastUtil.toastShort(this,"没有输入集合地点。");
+            return false;
+        }
+
+        if(null == mAVAcitivity.getMapPath()) {
+            ToastUtil.toastShort(this,"没有填写好路线。");
+            return false;
+        }
+
+        long startTime = mAVAcitivity.getStartDateMillisTime();
+        long endTime = mAVAcitivity.getEndDateMillisTime();
+        long registDeadline = mAVAcitivity.getRegistrationDeadline();
+
+        if(startTime <= 0) {
+            ToastUtil.toastShort(this,"请输入活动开始时间。");
+            return false;
+        }
+
+        if(endTime <= 0) {
+            ToastUtil.toastShort(this,"请输入活动结束时间。");
+            return false;
+        }
+
+        if(registDeadline <= 0) {
+            ToastUtil.toastShort(this,"请输入报名截止时间。");
+            return false;
+        }
+
+        if (startTime > endTime) {
+            ToastUtil.toastShort(this,"活动截止时间必须后于开始时间。");
+            return false;
+        }
+
+        if(registDeadline >= startTime) {
+            ToastUtil.toastShort(this,"报名截止时间必须在活动开始前。");
+            return  false;
+        }
+
+        if(!MStringUtil.isMobilePhone(mAVAcitivity.getPhone())) {
+            ToastUtil.toastShort(this,"请输入有效的电话号码。");
+            return false;
+        }
+
+        return true;
+    }
 
 
     private void createActToNet() {
-
-        //必要检查
 
         mAVAcitivity.setBaseUserInfo(mUserBaseInfo);
         mAVAcitivity.saveInBackground(new SaveCallback() {
@@ -215,7 +267,6 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
                         finish();
                     }
                 });
-                ;
             }
         });
 
@@ -238,9 +289,9 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
     int timeType = -1;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
-    long startTime = -1;
-    long endTime = -1;
-    long registTime = -1;
+//    long startTime = -1;
+//    long endTime = -1;
+//    long registTime = -1;
     private void showSelectTimeDlg(int timeFlag) {
             if(timeSelector == null) {
 
@@ -249,38 +300,20 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
                     public void handle(String time) {
                         try {
                             if(R.id.activity_start_date_btn == timeType) {
-                                startTime = simpleDateFormat.parse(time).getTime();
-                                mAVAcitivity.setStartDateMillisTime(startTime);
+                                mAVAcitivity.setStartDateMillisTime(simpleDateFormat.parse(time).getTime());
                                 actStartDateButton.setText(time);
                                 actEndDateButton.setText("");
-                                endTime = -1;
-                                mAVAcitivity.setEndDateMillisTime(0l);
                             } else if (R.id.activity_end_date_btn == timeType) {
-                                endTime = simpleDateFormat.parse(time).getTime();
-                                if(endTime <= startTime) {
-                                    ToastUtil.toastLong(getApplicationContext(),"输入有误(结束时间必须大于开始时间！).");
-                                    timeType = -1;
-                                    return;
-                                }
-                                mAVAcitivity.setEndDateMillisTime(endTime);
+                                mAVAcitivity.setEndDateMillisTime(simpleDateFormat.parse(time).getTime());
                                 actEndDateButton.setText(time);
                             } else if (R.id.registration_deadline_btn == timeType) {
-                                registTime = simpleDateFormat.parse(time).getTime();
-                                if(registTime < startTime) {
-                                    ToastUtil.toastLong(getApplicationContext(),"输入有误(报名截止时间必须在活动开始前！).");
-                                    timeType = -1;
-                                    return;
-                                }
-                                mAVAcitivity.setRegistrationDeadline(registTime);
+                                mAVAcitivity.setRegistrationDeadline(simpleDateFormat.parse(time).getTime());
                                 registrationDeadlineButton.setText(time);
                             }
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-
-
                         timeType = -1;
-
                     }
                 },simpleDateFormat.format(new Date()),"2030-01-01 00:00");
 
@@ -289,13 +322,6 @@ public class CreateTravelActivity extends BaseNoTitleActivity implements View.On
                         );
             }
 
-        if(R.id.registration_deadline_btn == timeFlag) {
-            if(startTime == -1 || endTime == -1) {
-                ToastUtil.toastLong(getApplication(),"请输入开始时间和结束时间。");
-                return;
-            }
-
-        }
             timeType = timeFlag;
             timeSelector.show();
 

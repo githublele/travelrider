@@ -12,9 +12,7 @@
 
 
     <RelativeLayout
-        android:gravity="center_vertical"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
+        style="@style/CustomTopNavStyle"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         >

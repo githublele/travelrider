@@ -1,55 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 android:orientation="vertical" android:layout_width="match_parent"
-android:layout_height="match_parent">
+android:layout_height="match_parent"
+    >
 
 <LinearLayout
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
+    android:layout_height="50dp"
+    android:background="#b0b0bb"
+    android:gravity="center_vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    >
     <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="返回"
-        android:id="@+id/back_btn" />
+        android:background="@mipmap/back_navigate_bk"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:onClick="backFun"
+        />
 
     <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:background="@color/colorWhite"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="34dp">
 
-        <ImageView
-            android:src="@mipmap/ic_launcher"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+
 
         <EditText
+            android:paddingLeft="5dp"
+            android:background="@null"
             android:hint="搜索"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="15sp"
+            android:textSize="18sp"
+            android:textColor="@color/colorBlack"
             android:id="@+id/search_input_edittext" />
         <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="X"
-            android:id="@+id/clear_input_text_btn" />
+            android:visibility="gone"
+            android:background="@mipmap/icon_close"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:id="@+id/clear_input_text_btn"
+            android:layout_marginRight="10dp"
+            />
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="确定"
-            android:id="@+id/search_btn" />
     </LinearLayout>
 </LinearLayout>
-
+    <ProgressBar
+        android:id="@+id/progress_progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:max="100"
+        />
     <ListView
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/place_suggestion_listview"

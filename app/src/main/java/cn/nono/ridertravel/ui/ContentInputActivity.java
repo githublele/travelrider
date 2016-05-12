@@ -10,6 +10,7 @@ import android.widget.TextView;
 import cn.nono.ridertravel.R;
 import cn.nono.ridertravel.debug.ToastUtil;
 import cn.nono.ridertravel.ui.base.BaseNoTitleActivity;
+import cn.nono.ridertravel.ui.travelact.CreateTravelActivity;
 import cn.nono.ridertravel.util.DataSimpleGetUtil;
 
 /**
@@ -24,6 +25,9 @@ public class ContentInputActivity extends BaseNoTitleActivity implements View.On
     TextView titleTextView;
     Button finishButton;
     EditText contenInputEditText;
+    
+    private  int  mReqCode = -1;
+    private TextView mTipsTextView;
 
 
     @Override
@@ -32,6 +36,12 @@ public class ContentInputActivity extends BaseNoTitleActivity implements View.On
         setContentView(R.layout.activity_content_input);
         initView();
         Intent intent = getIntent();
+        mReqCode = intent.getIntExtra("req_code",-1);
+        if(mReqCode == -1) {
+            finish();
+            return;
+        }
+
         String title = intent.getStringExtra(TITLE_KEY);
         if(null == title || title.isEmpty()) {
             finish();
@@ -39,12 +49,18 @@ public class ContentInputActivity extends BaseNoTitleActivity implements View.On
         }
         titleTextView.setText(title);
         String defStr = intent.getStringExtra(CONTENT_DEFAULT_KEY);
-        if(null != defStr && defStr.isEmpty()) {
+        if(null != defStr && !defStr.isEmpty()) {
             contenInputEditText.setText(defStr);
         }
+
+        if(mReqCode == CreateTravelActivity.HEADLINE_INPUT_REQ_CODE) {
+            mTipsTextView.setText("标题字数不得多于20个");
+        }
+
     }
 
     private void initView() {
+        mTipsTextView = (TextView) findViewById(R.id.tips_tv);
         titleTextView = (TextView) findViewById(R.id.title_tv);
         finishButton = (Button) findViewById(R.id.finish_btn);
         finishButton.setOnClickListener(this);
@@ -58,6 +74,14 @@ public class ContentInputActivity extends BaseNoTitleActivity implements View.On
             ToastUtil.toastLong(this,"没有输入内容!请重新输入。");
             return;
         }
+
+        if(mReqCode == CreateTravelActivity.HEADLINE_INPUT_REQ_CODE) {
+            if(content.length() >= 20) {
+                ToastUtil.toastLong(this,"输入内容长度大于20，请精简在20以内!。");
+                return;
+            }
+        }
+
         Intent intent = new Intent();
         intent.putExtra(RES_CONTENT_KEY,content);
         setResult(RESULT_OK,intent);
