@@ -7,14 +7,14 @@
     <ImageView
         android:id="@+id/diary_cover_imageview"
         android:layout_width="match_parent"
-        android:layout_height="186dp"
+        android:layout_height="200dp"
         android:src="@drawable/picture_default"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         />
 
     <RelativeLayout
         android:paddingLeft="10dp"
-        android:paddingBottom="10dp"
+        android:paddingBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

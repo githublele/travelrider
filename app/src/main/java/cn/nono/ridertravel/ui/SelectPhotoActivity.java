@@ -20,6 +20,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ import java.util.Set;
 
 import cn.nono.ridertravel.R;
 import cn.nono.ridertravel.ui.base.BaseNoTitleActivity;
-import cn.nono.ridertravel.util.ImageLoader;
+import cn.nono.ridertravel.util.ImageLoaderOptionsSetting;
 
 public class SelectPhotoActivity extends BaseNoTitleActivity{
 
@@ -73,7 +75,10 @@ public class SelectPhotoActivity extends BaseNoTitleActivity{
 
 			viewHolder = (ViewHolder) v.getTag();
 			viewHolder.checkBox.setTag(path);
-			ImageLoader.getInstance().loadImage(path, viewHolder.imageView);
+			ImageLoader.getInstance().displayImage("file://"+path,viewHolder.imageView, ImageLoaderOptionsSetting.getConstantImageLoaderDefaultOptions());
+
+
+
 			return v;
 		}
 

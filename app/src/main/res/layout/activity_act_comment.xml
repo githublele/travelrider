@@ -3,24 +3,23 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+    <RelativeLayout
+        style="@style/CustomTopNavStyle"
+        android:background="@color/colorLightBlue"
+        >
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="back"
-            android:id="@+id/back_btn" />
-
+            style="@style/CustomTopNavBackButtonStyle"
+            android:id="@+id/back_btn"
+            />
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorWhite"
+            android:layout_marginLeft="20dp"
+            style="@style/CustomTopNavTextViewStype"
             android:text="活动留言"
-            android:id="@+id/textView7" />
-    </LinearLayout>
+            android:layout_toRightOf="@id/back_btn"
+            />
+    </RelativeLayout>
+
 
     <ListView
         android:layout_width="match_parent"

@@ -25,11 +25,9 @@ import cn.nono.ridertravel.bean.av.AVTravelActivity;
 import cn.nono.ridertravel.bean.av.AVTravelDiary;
 import cn.nono.ridertravel.bean.av.AVTravelDiaryContent;
 import cn.nono.ridertravel.bean.av.AVTravelMapPath;
-import cn.nono.ridertravel.util.DiskBitmapCache;
 
 public class RiderTravelApplication extends Application {
 
-	private DiskBitmapCache mDiskBitmapCache;
 	private AVBaseUserInfo mBaseUserInfo;
 
 	@Override
@@ -47,8 +45,6 @@ public class RiderTravelApplication extends Application {
 
 		AVOSCloud.isDebugLogEnabled();
 		AVOSCloud.initialize(this, "znwHiaY89nTixY6q6qHucyvl-gzGzoHsz", "moGC4z10Dwbz8CjzTbgT150l");
-
-		mDiskBitmapCache = new DiskBitmapCache(getCacheDir(),10 * 1024 * 1024);
 
 		SDKInitializer.initialize(getApplicationContext());
 
@@ -80,10 +76,6 @@ public class RiderTravelApplication extends Application {
 		// Initialize ImageLoader with configuration.
 		ImageLoader.getInstance().init(config);
 
-	}
-
-	public DiskBitmapCache getDiskBitmapCache() {
-		return mDiskBitmapCache;
 	}
 
 	public AVBaseUserInfo getUserBaseInfo() {

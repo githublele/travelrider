@@ -87,7 +87,7 @@
         </activity>
         <activity android:name="cn.nono.ridertravel.ui.SelectPhotoActivity" >
         </activity>
-        <activity android:name="cn.nono.ridertravel.ui.AddPhotoDescriptionActivity" >
+        <activity android:name=".ui.diary.AddPhotoDescriptionActivity" >
         </activity>
         <activity android:name="cn.nono.ridertravel.ui.diary.DiaryPreviewActivity" >
         </activity>

@@ -40,7 +40,6 @@ import cn.nono.ridertravel.bean.PhotoBean;
 import cn.nono.ridertravel.bean.av.AVMUser;
 import cn.nono.ridertravel.debug.LogSimple;
 import cn.nono.ridertravel.debug.ToastUtil;
-import cn.nono.ridertravel.ui.AddPhotoDescriptionActivity;
 import cn.nono.ridertravel.ui.SelectPhotoActivity;
 import cn.nono.ridertravel.ui.base.BaseNoTitleActivity;
 import cn.nono.ridertravel.util.DataSimpleGetUtil;

@@ -24,7 +24,37 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">44dp</item>
         <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
     </style>
+
+
+    <!--顶部导航栏 返回按钮style(和顶部导航栏匹配) -->
+    <style name="CustomTopNavBackButtonStyle">
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">38dp</item>
+        <item name="android:background">@mipmap/back_navigate_bk</item>
+    </style>
+
+<!--顶部导航栏 按钮的常规style(和顶部导航栏匹配) -->
+    <style name="CustomTopNavButtonStype">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <!--顶部导航栏 标题文字的常规style(和顶部导航栏匹配) -->
+    <style name="CustomTopNavTextViewStype">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+
 
 
     <!--活动创建文字提示style -->

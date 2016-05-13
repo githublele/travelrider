@@ -12,7 +12,7 @@ import java.util.List;
 import cn.nono.ridertravel.R;
 import cn.nono.ridertravel.bean.DiarySheetBean;
 import cn.nono.ridertravel.bean.PhotoBean;
-import cn.nono.ridertravel.util.ImageLoader;
+import cn.nono.ridertravel.util.ImageLoaderOptionsSetting;
 
 public class DiaryEditPhotoAdapter extends BaseAdapter {
 
@@ -78,17 +78,17 @@ public class DiaryEditPhotoAdapter extends BaseAdapter {
 		if(null == convertView) {
 			convertView =  inflater.inflate(R.layout.item_diary_photo_show, null);
 			viewHolder = new ViewHolder();
-			viewHolder.imageView = (ImageView) convertView.findViewById(R.id.photo_imageview);
+			viewHolder.imageView = (ImageView) convertView;
 			if(position == lastPosition)
 				viewHolder.isPhoto = false;
 			convertView.setTag(viewHolder);
 		} 
 		viewHolder = (ViewHolder) convertView.getTag();		
 		if(position != lastPosition) {
-			ImageLoader.getInstance().loadImage(this.photos.get(position).path, viewHolder.imageView);
+			com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage("file://"+this.photos.get(position).path,viewHolder.imageView, ImageLoaderOptionsSetting.getConstantImageLoaderDefaultOptions());
 			viewHolder.isPhoto = true;
 		} else {
-			viewHolder.imageView.setBackgroundResource(R.mipmap.camera);
+			viewHolder.imageView.setImageResource(R.drawable.camera_btn_selector);
 			viewHolder.isPhoto = false;
 		}		
 		return convertView;

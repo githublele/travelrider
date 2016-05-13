@@ -21,7 +21,7 @@ import cn.nono.ridertravel.bean.DiaryBean;
 import cn.nono.ridertravel.bean.DiarySheetBean;
 import cn.nono.ridertravel.bean.PhotoBean;
 import cn.nono.ridertravel.ui.base.BaseNoTitleActivity;
-import cn.nono.ridertravel.util.ImageLoader;
+import cn.nono.ridertravel.util.ImageLoaderOptionsSetting;
 import cn.nono.ridertravel.util.StringUtil;
 
 public class DiaryPreviewActivity extends BaseNoTitleActivity {
@@ -67,7 +67,7 @@ public class DiaryPreviewActivity extends BaseNoTitleActivity {
 
 				if(!StringUtil.empty(diaryItem.photo_path)) {
 					viewHolder.photoImageView.setVisibility(View.VISIBLE);
-					ImageLoader.getInstance().loadImage(diaryItem.photo_path, viewHolder.photoImageView);
+					com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage("file://"+diaryItem.photo_path,viewHolder.photoImageView, ImageLoaderOptionsSetting.getConstantImageLoaderDefaultOptions());
 				} else {
 					viewHolder.photoImageView.setVisibility(View.GONE);
 				}

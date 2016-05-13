@@ -5,38 +5,39 @@
     android:orientation="vertical" >
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
+        style="@style/CustomTopNavStyle"
+        android:background="@color/colorLightBlue"
          >
 
         <Button
             android:id="@+id/back_btn"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="≤" />
+           style="@style/CustomTopNavBackButtonStyle"
+            />
 
         <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+          style="@style/CustomTopNavTextViewStype"
+            android:layout_toRightOf="@+id/back_btn"
+            android:layout_marginLeft="10dp"
             android:text="编辑游记"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textColor="@color/colorWhite"
+            />
 
         <Button
             android:id="@+id/upload_diary_btn"
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
+            android:textColor="@color/colorWhite"
+            android:background="@null"
+            android:textSize="18sp"
             android:text="上传" />
 
         <Button
+            android:textSize="18sp"
+            android:textColor="@color/colorWhite"
+            android:background="@null"
             android:id="@+id/preview_diary_btn"
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -44,98 +45,114 @@
             android:text="预览" />
     </RelativeLayout>
 
-    <RelativeLayout
-         android:padding="8dp"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:alpha="0.8"
-        android:background="@mipmap/diary_default_cover_bg" >
-
+        android:layout_height="200dp">
         <ImageView
-            android:id="@+id/head_icon_imageview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:src="@mipmap/ic_launcher" />
-
-       <EditText
-            android:id="@+id/diary_headline_ev"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/head_icon_imageview"
-            android:layout_toRightOf="@id/head_icon_imageview"
-            android:hint="输入游记名称"
-            android:textSize="15sp"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/diary_cover_imageview"
+            android:src="@mipmap/diary_cover_default"
+            />
+        <RelativeLayout
+            android:paddingLeft="10dp"
+            android:paddingBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             >
 
-        </EditText>
+            <ImageView
+                android:id="@+id/head_icon_imageview"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:src="@mipmap/icon_head_default" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_alignLeft="@+id/diary_headline_ev"
-            android:layout_alignParentBottom="true"
-            >
-            <TextView
-                android:id="@+id/date_start_tv"
+            <EditText
+                android:textColor="@color/colorWhite"
+                android:id="@+id/diary_headline_ev"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignTop="@id/head_icon_imageview"
+                android:layout_toRightOf="@id/head_icon_imageview"
+                android:hint="输入游记名称"
+                android:textSize="15sp"
+                android:textColorHint="@color/colorWhite"
+                >
+
+            </EditText>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_alignLeft="@+id/diary_headline_ev"
                 android:layout_alignParentBottom="true"
-                android:text="2016.01.01"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
-            <TextView
-                android:id="@+id/days_count_tv"
-                android:layout_marginLeft="10dp"
-                android:text="15天"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                />
-            <TextView
-                android:id="@+id/photo_count_tv"
-                android:layout_marginLeft="10dp"
-                android:text="100图"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                />
+                >
+                <TextView
+                    android:textColor="@color/colorWhite"
+                    android:id="@+id/date_start_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/diary_headline_ev"
+                    android:layout_alignParentBottom="true"
+                    android:text="2016.01.01"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+                <TextView
+                    android:textColor="@color/colorWhite"
+                    android:id="@+id/days_count_tv"
+                    android:layout_marginLeft="10dp"
+                    android:text="15天"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    />
+                <TextView
+                    android:textColor="@color/colorWhite"
+                    android:id="@+id/photo_count_tv"
+                    android:layout_marginLeft="10dp"
+                    android:text="100图"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    />
 
-        </LinearLayout>
+            </LinearLayout>
 
-        
-    </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-         >
+        </RelativeLayout>
 
-        <TextView
-            android:layout_marginLeft="4dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="添加"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </FrameLayout>
 
-        <Button
-            android:id="@+id/add_sheet_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+" />
-    </LinearLayout>
 <View 
      android:layout_width="match_parent"
      android:layout_height="1dp"
      android:background="@color/line_bg_general_gray"
     />
 
-<ListView
-    android:id="@+id/diary_sheet_listview"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-</ListView>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+        <ListView
+            android:id="@+id/diary_sheet_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </ListView>
+
+        <Button
+            android:id="@+id/add_sheet_btn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/add_btn_bg_selector"
+            android:layout_gravity="right|bottom"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="24dp" />
+    </FrameLayout>
+
+
     
 </LinearLayout>

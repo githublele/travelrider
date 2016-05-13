@@ -2,11 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="90dp"
     android:layout_height="90dp" >
-    <ImageView 
+    <cn.nono.ridertravel.view.SquareImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/photo_iv"
         android:src="@mipmap/ic_launcher"
+        android:scaleType="centerCrop"
         />
 
     <CheckBox

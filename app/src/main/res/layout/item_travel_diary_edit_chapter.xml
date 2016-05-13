@@ -6,8 +6,11 @@
      >
 
     <LinearLayout
+        android:background="@color/colorWhite"
         android:layout_width="match_parent"
-        android:layout_height="40dp" >
+        android:layout_height="38dp"
+        android:paddingLeft="10dp"
+        >
 
         <TextView
             android:gravity="center_vertical"
@@ -15,19 +18,23 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="DAY1"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
+            android:textColor="@color/text_color_general_black"
+            android:textSize="20sp"
+             />
         <TextView
+            android:layout_marginLeft="20dp"
+            android:textSize="14sp"
             android:gravity="center_vertical"
             android:id="@+id/diary_chapter_date_tv"           
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="2016年03月01日 周二"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+             />
     </LinearLayout>
     <include layout="@layout/line_layout"/>
 
     <LinearLayout
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="40dp" >
 
@@ -48,10 +55,13 @@
     </LinearLayout>
 
     <cn.nono.ridertravel.view.NoScrollGridView
+        android:background="@color/colorGray"
         android:id="@+id/photos_gridlayout"
         android:stretchMode="columnWidth"
-        android:numColumns="3"
-        android:padding="5dp"
+        android:padding="4dp"
+        android:numColumns="4"
+        android:verticalSpacing="2dp"
+        android:horizontalSpacing="2dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </cn.nono.ridertravel.view.NoScrollGridView>
