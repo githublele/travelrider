@@ -153,7 +153,6 @@ class ViewHolderCommemt {
     private ScrollView mScrollView;
     private ImageView mActThumbnailMapImageView;
     private TextView mActStateTextView;
-    private TextView mCityTextView;
     private TextView mActStarDateTextView;
     private TextView mActEndDateTextView;
     private TextView mPhoneTextView;
@@ -270,9 +269,6 @@ class ViewHolderCommemt {
         mActThumbnailMapImageView = (ImageView) findViewById(R.id.map_thumbnail_imageview);
         mActThumbnailMapImageView.setOnClickListener(this);
         mActStateTextView = (TextView) findViewById(R.id.activity_state_tv);
-
-        mCityTextView = (TextView) findViewById(R.id.city_tv);
-        mCityTextView.setText("默认城市 T");
 
         mActStarDateTextView = (TextView) findViewById(R.id.activity_start_date_tv);
         mActStarDateTextView.setText(SimpleDateUtil.formatDate(SimpleDateUtil.YMDHMS,mTravelAct.getStartDateMillisTime()));

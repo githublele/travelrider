@@ -80,4 +80,23 @@
 
     </style>
 
+<!--查看活动 活动信息TextView 基本Style -->
+    <style name="CustomActBrowseTextViewStyleL">
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical|left</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="CustomActBrowseTextViewStyleR">
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical|left</item>
+    </style>
+
+
 </resources>
