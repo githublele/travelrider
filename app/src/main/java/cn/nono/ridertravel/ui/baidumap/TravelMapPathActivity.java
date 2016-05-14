@@ -263,7 +263,6 @@ public class TravelMapPathActivity extends BaseNoTitleActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_place);
-
         mRequestQueue = Volley.newRequestQueue(getApplication());
         mRequestQueue.start();
         initView();

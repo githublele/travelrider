@@ -26,6 +26,15 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
 
 import java.util.ArrayList;
@@ -90,6 +99,12 @@ public class TravelActivityBrowseActivity extends BaseNoTitleActivity implements
     };
     private LinearLayout mCommentLinearLayout;
     private LinearLayout mParticipatorsLinearLayout;
+    private LinearLayout mContentLinearLayout;
+    private MapView mBaiduMapView;
+    private BaiduMap mBaiduMap;
+    private List<LatLng> mPathLatLngs;
+    BitmapDescriptor mBlueTexture = BitmapDescriptorFactory.fromAsset("icon_road_blue_arrow.png");
+
 
     class ViewHolderSomeUser {
         public ImageView  headIconImgeView;
@@ -254,6 +269,63 @@ class ViewHolderCommemt {
                         mHandler.sendMessage(msg);
                     }
                 });
+
+        //加载路线地图经纬度数据
+        AVQuery<AVTravelMapPath> mapPathAVQuery = AVQuery.getQuery(AVTravelMapPath.class);
+
+        AVTravelMapPath avTravelMapPath = mTravelAct.getMapPath();
+        //晕倒。。。。。测试数据比较多。。。
+        if(null == avTravelMapPath) {
+            ToastUtil.toastShort(TravelActivityBrowseActivity.this,"路径信息缺失。。");
+            return;
+        }
+
+        mapPathAVQuery.getInBackground(avTravelMapPath.getObjectId(), new GetCallback<AVTravelMapPath>() {
+            @Override
+            public void done(AVTravelMapPath avTravelMapPath, AVException e) {
+
+                if(null != e && e.getCode() == AVException.OBJECT_NOT_FOUND) {
+                    ToastUtil.toastShort(TravelActivityBrowseActivity.this,"路径信息缺失。。");
+                    return;
+                }
+                if(null == e) {
+                    if(null != avTravelMapPath) {
+                      List<AVGeoPoint> avGeoPoints =  avTravelMapPath.getMapPathLatLngArr();
+                        if(null == avGeoPoints || avGeoPoints.size() <= 1) {
+                            ToastUtil.toastShort(TravelActivityBrowseActivity.this,"路径信息缺失。。");
+                            return;
+                        }
+                        //转换 百度的经纬度
+                        mPathLatLngs = new ArrayList<LatLng>();
+                        int length = avGeoPoints.size();
+                        AVGeoPoint avPoint = null;
+                        for (int i = 0; i < length; i++) {
+                            avPoint = avGeoPoints.get(i);
+                            mPathLatLngs.add(new LatLng(avPoint.getLatitude(),avPoint.getLongitude()));
+                        }
+                        showPathOnMap();
+                    }
+                }
+
+            }
+        });
+
+
+    }
+
+    private void showPathOnMap() {
+        if(null == mPathLatLngs || mPathLatLngs.size() <= 1)
+            return;
+
+        // 地图地位地点 定位（把地图拉到路径那个地方）
+        MapStatus mapStatus = new MapStatus.Builder().target(mPathLatLngs.get(0)).zoom(18).build();
+        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mapStatus);
+        mBaiduMap.setMapStatus(mapStatusUpdate);
+
+        //画路径折线图
+        OverlayOptions ooPolyline11 = new PolylineOptions().width(5).points(mPathLatLngs).customTexture(mBlueTexture).dottedLine(true);
+        mBaiduMap.addOverlay(ooPolyline11);
+
     }
 
     private void initView() {
@@ -266,8 +338,10 @@ class ViewHolderCommemt {
             }
         });
         
-        mActThumbnailMapImageView = (ImageView) findViewById(R.id.map_thumbnail_imageview);
-        mActThumbnailMapImageView.setOnClickListener(this);
+//        mActThumbnailMapImageView = (ImageView) findViewById(R.id.map_thumbnail_imageview);
+//        mActThumbnailMapImageView.setOnClickListener(this);
+
+
         mActStateTextView = (TextView) findViewById(R.id.activity_state_tv);
 
         mActStarDateTextView = (TextView) findViewById(R.id.activity_start_date_tv);
@@ -319,6 +393,25 @@ class ViewHolderCommemt {
 
         mUploadCommemtBtn = (Button) findViewById(R.id.add_commemt_btn);
         mUploadCommemtBtn.setOnClickListener(this);
+
+        mContentLinearLayout = (LinearLayout) findViewById(R.id.content_ll);
+        //取消显示的评论View
+        mContentLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideCommemtEditView();
+            }
+        });
+
+
+        initBaiduMapView();
+    }
+
+    private void initBaiduMapView() {
+        mBaiduMapView = (MapView) findViewById(R.id.ativity_path_baidumap);
+        mBaiduMap = mBaiduMapView.getMap();
+        mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
+
     }
 
 
@@ -328,9 +421,9 @@ class ViewHolderCommemt {
             case R.id.back_btn:
                 finish();
                 break;
-            case R.id.map_thumbnail_imageview:
-                browseActivityTravelMapPath();
-                break;
+//            case R.id.map_thumbnail_imageview:
+//                browseActivityTravelMapPath();
+//                break;
             case R.id.join_activity_btn:
                 joinAct();
                 break;
@@ -452,6 +545,7 @@ class ViewHolderCommemt {
             mCommemtEditLinearLayout.setVisibility(View.GONE);
             mBottomBtnsLinearLayout.setVisibility(View.VISIBLE);
             mCommemtLinearLayoutVisible = false;
+            mCommemtEditText.setText("");
         }
     }
 

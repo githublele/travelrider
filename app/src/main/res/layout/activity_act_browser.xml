@@ -32,11 +32,11 @@
         >
 
         <LinearLayout
+            android:id="@+id/content_ll"
             android:paddingTop="10dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
 
             <LinearLayout
                 android:background="@color/colorWhite"
@@ -75,20 +75,19 @@
                     android:text="2016:04:21 12:00"
                     android:id="@+id/registration_deadline_tv" />
             </LinearLayout>
-           <!--<com.baidu.mapapi.map.MapView-->
-               <!--android:layout_width="match_parent"-->
-               <!--android:layout_height="200dp"-->
-               <!--android:id="@+id/ativity_path_baidumap"-->
-               <!--&gt;-->
+           <com.baidu.mapapi.map.MapView
+               android:layout_width="match_parent"
+               android:layout_height="300dp"
+               android:id="@+id/ativity_path_baidumap"
+               >
+           </com.baidu.mapapi.map.MapView>
 
-           <!--</com.baidu.mapapi.map.MapView>-->
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:src="@mipmap/photo_1"
-                android:scaleType="centerCrop"
-                android:id="@+id/map_thumbnail_imageview" />
+            <!--<ImageView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="200dp"-->
+                <!--android:src="@mipmap/photo_1"-->
+                <!--android:scaleType="centerCrop"-->
+                <!--android:id="@+id/map_thumbnail_imageview" />-->
 
             <LinearLayout
                 android:background="@color/colorWhite"
@@ -266,24 +265,41 @@
         android:id="@+id/comment_btn" />
 </LinearLayout>
     <LinearLayout
+        android:background="@color/colorWhite"
+        android:padding="10dp"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/comment_edit_ll"
         >
-    <EditText
-        android:id="@+id/comment_edittext"
-        android:hint="我来评2句"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content" />
+        <LinearLayout
+            android:background="@drawable/rect_blue_bg"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <EditText
+                android:padding="10dp"
+                android:background="@null"
+                android:gravity="left"
+                android:textSize="15sp"
+                android:id="@+id/comment_edittext"
+                android:hint="我来评2句"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/add_commemt_btn"
         android:text="添加"
         android:gravity="center"
+        android:background="@null"
+        android:textColor="@color/colorLightBlue"
         />
 </LinearLayout>
 </LinearLayout>
