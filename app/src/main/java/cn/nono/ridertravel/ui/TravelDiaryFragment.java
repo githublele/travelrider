@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -19,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
@@ -36,12 +40,11 @@ import cn.nono.ridertravel.ui.base.BaseFragment;
 import cn.nono.ridertravel.ui.diary.DiaryBrowseActivity;
 import cn.nono.ridertravel.ui.diary.TravelDiaryEditActivity;
 import cn.nono.ridertravel.util.ImageLoaderOptionsSetting;
+import cn.nono.ridertravel.view.MSwipeRefreshLayout;
 
-public final class TravelDiaryFragment extends BaseFragment implements OnClickListener{
+public final class TravelDiaryFragment extends BaseFragment implements OnClickListener,SwipeRefreshLayout.OnRefreshListener{
 
 	private final static int ADD_DIRAY_REQUEST_CODE = 1;
-
-
 
 	private Button userInfoBtn = null;
 	private Button userSetingBtn = null;
@@ -51,11 +54,14 @@ public final class TravelDiaryFragment extends BaseFragment implements OnClickLi
 	private Button addDiaryBtn = null;
 
 	List<AVTravelDiary> diaries = new ArrayList<AVTravelDiary>();
+	private int mLastItemIndex = -1;
+	private MSwipeRefreshLayout mSwipRefreshLayout;
+	private View mFootView;
+	private boolean mIsLoading = false;
 
 	public TravelDiaryFragment(){
 		parentAct = getActivity();
 	}
-
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,23 +71,7 @@ public final class TravelDiaryFragment extends BaseFragment implements OnClickLi
 	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		AVQuery<AVTravelDiary> query = AVQuery.getQuery(AVTravelDiary.class);
-		query.include(AVTravelDiary.AUTHOR_BASE_INFO_POINTER_KEY);
-		query.orderByDescending("createAt");
-		query.findInBackground(new FindCallback<AVTravelDiary>() {
-			@Override
-			public void done(List<AVTravelDiary> list, AVException e) {
-				diaries.clear();
-				if(null != e) {
-					ToastUtil.toastLong(getActivity(), "拉取数据失败");
-					e.printStackTrace();
-					return;
-				}
-
-				diaries.addAll(list);
-				lisAdapter.notifyDataSetChanged();
-			}
-		});
+		onRefresh();
 	}
 
 	@Override
@@ -124,7 +114,6 @@ public final class TravelDiaryFragment extends BaseFragment implements OnClickLi
 			AVBaseUserInfo avBaseUserInfo = avTravelDiary.getAuthorBaseInfo();
 			if(null != avBaseUserInfo)
 				viewHolder.userNicknameTextView.setText(avBaseUserInfo.getNickname());
-
 			return convertView;
 		}
 
@@ -157,6 +146,39 @@ public final class TravelDiaryFragment extends BaseFragment implements OnClickLi
 		//jump to add diary act
 		Intent intent = new Intent(getActivity(), TravelDiaryEditActivity.class);
 		startActivityForResult(intent,ADD_DIRAY_REQUEST_CODE);
+	}
+
+	//刷新
+	@Override
+	public void onRefresh() {
+
+		mSwipRefreshLayout.setRefreshing(true);
+		AVQuery<AVTravelDiary> query = AVQuery.getQuery(AVTravelDiary.class);
+		query.include(AVTravelDiary.AUTHOR_BASE_INFO_POINTER_KEY);
+		query.orderByDescending(AVObject.CREATED_AT);
+		query.setLimit(10);
+		query.findInBackground(new FindCallback<AVTravelDiary>() {
+			@Override
+			public void done(List<AVTravelDiary> list, AVException e) {
+
+				for (AVTravelDiary diary:list
+					 ) {
+					Log.i("bb",diary.getCreatedAt().toString());
+				}
+				mSwipRefreshLayout.setRefreshing(false);
+				diaries.clear();
+				if(null != e) {
+					ToastUtil.toastLong(getActivity(), "拉取数据失败");
+					e.printStackTrace();
+					return;
+				}
+
+				diaries.addAll(list);
+				lisAdapter.notifyDataSetChanged();
+			}
+		});
+
+
 	}
 
 	class ViewHolder {
@@ -208,7 +230,10 @@ public final class TravelDiaryFragment extends BaseFragment implements OnClickLi
 		viewPager.setAdapter(pagerAdapter);
 
 		listView = (ListView) view.findViewById(R.id.diary_list);
+		 mFootView = LayoutInflater.from(getActivity()).inflate(R.layout.item_listview_foot_addmore,null);
+		listView.addFooterView(mFootView,null,false);
 		listView.setAdapter(lisAdapter);
+		listView.removeFooterView(mFootView);
 		listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -222,10 +247,104 @@ public final class TravelDiaryFragment extends BaseFragment implements OnClickLi
 			}
 		});
 
+		listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+				Log.i("bb","scrollState:"+scrollState);
+		Log.i("bb","getLastVisiblePosition:"+listView.getLastVisiblePosition());
+
+				if(AbsListView.OnScrollListener.SCROLL_STATE_IDLE == scrollState) {
+					//离最后一个数据还有2个间隔的时候 就把footerView加上 并加载数据。
+					if(listView.getLastVisiblePosition() >= (lisAdapter.getCount() - 3)) {
+						if(listView.getFooterViewsCount() == 0)
+							listView.addFooterView(mFootView,null,false);
+						if(!mIsLoading)
+							loadMoreNetData();
+					}
+				}
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				Log.i("bb","firstVisibleItem:"+firstVisibleItem +" visibleItemCount:"+visibleItemCount + " totalItemCount:"+totalItemCount);
+				Log.i("bb","getFooterViewsCount:"+listView.getFooterViewsCount());
+				//这里控制footView 的显示
+
+
+				}
+
+
+
+
+		});
+
+
+
 		addDiaryBtn = (Button) view.findViewById(R.id.add_diary_btn);
 		addDiaryBtn.setOnClickListener(this);
 
+		mSwipRefreshLayout = (MSwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_ly);
+		mSwipRefreshLayout.setOnRefreshListener(this);
+		mSwipRefreshLayout.setBaseListView(this.listView);
+
+
 	}
+
+	private void loadMoreNetData() {
+		Log.i("bb","loadMoreNetData");
+		if(null == diaries || diaries.size() <= 0) {
+			return;
+		}
+
+
+		AVTravelDiary lastDairy = diaries.get(diaries.size() - 1);
+		if(null == lastDairy) {
+			if(listView.getFooterViewsCount() > 0)
+				listView.removeFooterView(mFootView);
+			return;
+		}
+
+		AVQuery<AVTravelDiary> query = AVQuery.getQuery(AVTravelDiary.class);
+		query.orderByDescending(AVObject.CREATED_AT);
+		query.include(AVTravelDiary.AUTHOR_BASE_INFO_POINTER_KEY);
+		query.whereLessThan(AVObject.CREATED_AT,lastDairy.getCreatedAt());
+		query.whereNotEqualTo(AVObject.OBJECT_ID,lastDairy.getObjectId());
+		query.setLimit(10);
+		mIsLoading = true;
+		query.findInBackground(new FindCallback<AVTravelDiary>() {
+			@Override
+			public void done(List<AVTravelDiary> list, AVException e) {
+				mIsLoading = false;
+				if(listView.getFooterViewsCount() > 0) {
+					listView.removeFooterView(mFootView);
+				}
+
+				if (null == e) {
+					if (null != list && list.size() > 0) {
+						diaries.addAll(list);
+						lisAdapter.notifyDataSetChanged();
+
+					} else {
+						ToastUtil.toastShort(getActivity(),"没有更多了。");
+					}
+					return;
+				}
+
+				if(AVException.OBJECT_NOT_FOUND == e.getCode()) {
+					ToastUtil.toastShort(getActivity(),"没有更多了。");
+					return;
+				}
+
+				ToastUtil.toastShort(getActivity(),"网络异常，加载失败。"+e.getCode());
+				e.printStackTrace();
+			}
+		});
+
+
+	}
+
+
 
 	private String getDiaryBaseInfo(AVTravelDiary avTravelDiary) {
 		if(null == avTravelDiary)
@@ -259,15 +378,10 @@ public final class TravelDiaryFragment extends BaseFragment implements OnClickLi
 		super.onActivityResult(requestCode, resultCode, data);
 		if (ADD_DIRAY_REQUEST_CODE == requestCode && Activity.RESULT_OK == resultCode) {
 			//新的游记添加完成 == >  重新刷新列表
-			refreshDiaryList();
+			onRefresh();
 		}
 	}
 
-	//重新刷新游记列表
-	private void refreshDiaryList() {
-		//待完成。
-
-	}
 
 	@Override
 	public void onDestroy() {

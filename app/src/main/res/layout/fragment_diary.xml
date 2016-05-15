@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="#e0e0e0"
     android:orientation="vertical" >
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,6 +11,7 @@
          >
 
         <TextView
+
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="骑游" />
@@ -39,23 +39,40 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             />
-        
+
     </LinearLayout>
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager" 
-        android:layout_width="match_parent" 
-        android:layout_height="150dp" 
-        />
+
+
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ListView
-            android:id="@+id/diary_list"
+        <cn.nono.ridertravel.view.MSwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:id="@+id/swipe_refresh_ly"
             >
-        </ListView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    />
+                <ListView
+                    android:id="@+id/diary_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    >
+                </ListView>
 
+            </LinearLayout>
+
+
+        </cn.nono.ridertravel.view.MSwipeRefreshLayout>
         <Button
             android:id="@+id/add_diary_btn"
             android:layout_width="48dp"
@@ -66,6 +83,9 @@
             android:layout_marginBottom="24dp"
             />
     </FrameLayout>
+
+
+
 
 
 </LinearLayout>
