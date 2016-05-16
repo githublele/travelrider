@@ -2,16 +2,17 @@ package cn.nono.ridertravel.ui.usercenter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
@@ -27,9 +28,10 @@ import cn.nono.ridertravel.debug.ToastUtil;
 import cn.nono.ridertravel.ui.base.BaseFragment;
 import cn.nono.ridertravel.util.ImageLoaderOptionsSetting;
 
-public class MyTravelDiaryFragment extends BaseFragment implements View.OnClickListener{
+public class MyTravelDiaryFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener{
 
 	private ListView listView;
+	private SwipeRefreshLayout mSwipRefreshLayout;
 	private List<AVTravelDiary> travelDiaries = new ArrayList<AVTravelDiary>();
 
 
@@ -90,8 +92,38 @@ public class MyTravelDiaryFragment extends BaseFragment implements View.OnClickL
 	}
 
 	@Override
-	public void onClick(View v) {
-		refresh(null);
+	public void onRefresh() {
+
+		AVMUser avUser = (AVMUser) AVUser.getCurrentUser();
+		//循例
+		if(null != avUser) {
+			mSwipRefreshLayout.setRefreshing(true);
+			AVQuery<AVTravelDiary> query = avUser.getCreateDiariesRelation().getQuery();
+			query.orderByDescending(AVObject.CREATED_AT);
+			query.setLimit(10);
+			query.findInBackground(new FindCallback<AVTravelDiary>() {
+				@Override
+				public void done(List<AVTravelDiary> list, AVException e) {
+					mSwipRefreshLayout.setRefreshing(false);
+					if(null != e && AVException.OBJECT_NOT_FOUND != e.getCode()) {
+						ToastUtil.toastShort(getActivity(),"网络数据获取失败"+e.getCode());
+						return;
+					}
+
+					if(null != list && list.size() > 0) {
+						travelDiaries.clear();
+						travelDiaries.addAll(list);
+						diaryAdapter.notifyDataSetInvalidated();
+						return;
+					}
+
+						ToastUtil.toastShort(getActivity(),"没有数据。");
+				}
+			});
+		}
+
+
+
 	}
 
 
@@ -117,43 +149,17 @@ public class MyTravelDiaryFragment extends BaseFragment implements View.OnClickL
 	}
 
 	private void initDate() {
-		refresh(null);
+		onRefresh();
 	}
 
 	private void init(View view) {
 		// TODO Auto-generated method stub
 	 	listView =	(ListView) view.findViewById(R.id.diarys_listview);
 		listView.setAdapter(this.diaryAdapter);
-		((Button) view.findViewById(R.id.refresh_btn)).setOnClickListener(this);
+		mSwipRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_ly);
+		mSwipRefreshLayout.setOnRefreshListener(this);
 
 	}
-
-	//刷新
-	public void refresh(View view) {
-		AVMUser avUser = (AVMUser) AVUser.getCurrentUser();
-		//循例
-		if(null != avUser) {
-			AVQuery<AVTravelDiary> query = avUser.getCreateDiariesRelation().getQuery();
-			query.findInBackground(new FindCallback<AVTravelDiary>() {
-				@Override
-				public void done(List<AVTravelDiary> list, AVException e) {
-					if(null != e) {
-						ToastUtil.toastShort(getActivity(),"网络数据获取失败"+e.getCode());
-						return;
-					}
-
-					if(null != list && list.size() > 0) {
-						travelDiaries.clear();
-						travelDiaries.addAll(list);
-						diaryAdapter.notifyDataSetInvalidated();
-					} else {
-						ToastUtil.toastShort(getActivity(),"没有数据");
-					}
-				}
-			});
-		}
-	}
-
 
 
 

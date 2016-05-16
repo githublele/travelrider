@@ -5,17 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
@@ -33,9 +34,10 @@ import cn.nono.ridertravel.util.SimpleDateUtil;
 /**
  * Created by Administrator on 2016/4/25.
  */
-public class ActivityICreatedFragment extends Fragment implements View.OnClickListener{
+public class ActivityICreatedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     private ListView mTravelActsListView;
+    private SwipeRefreshLayout mSwipRefreshLayout;
     private ArrayList<AVTravelActivity> mTravelActivities = new ArrayList<AVTravelActivity>();
 
     private BaseAdapter mListAdapter = new BaseAdapter() {
@@ -82,61 +84,22 @@ public class ActivityICreatedFragment extends Fragment implements View.OnClickLi
         }
     };
 
-    class ViewHolder {
-        TextView actStateTextView;
-        TextView actHeadlineTextView;
-        TextView actStartDateTextView;
-        TextView actEndDateTextView;
-        TextView actIssuerTextView;
-        TextView actFallInPlaceTextView;
-        ImageView actMapImageView;
-    }
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_travel_act_i_create, container, false);
-        init(view);
-        refreshActivityListFromNet();
-        return view;
-    }
-
-    private void init(View view) {
-        ((Button) view.findViewById(R.id.refresh_btn)).setOnClickListener(this);
-       mTravelActsListView = (ListView) view.findViewById(R.id.activity_list_listview);
-       mTravelActsListView.setAdapter(mListAdapter);
-       mTravelActsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-           @Override
-           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               AVTravelActivity act = mTravelActivities.get(position);
-               Intent intent = new Intent(getActivity(),TravelActivityBrowseActivity.class);
-               intent.putExtra(TravelActivityBrowseActivity.AV_TRAVEL_ACT_KEY,act);
-               startActivity(intent);
-           }
-       });
-    }
-
-
-    @Override
-    public void onClick(View v) {
-      refreshActivityListFromNet();
-    }
-
-
-    private void refreshActivityListFromNet() {
-
+    public void onRefresh() {
         AVMUser avmUser = (AVMUser) AVUser.getCurrentUser();
         if(null == avmUser)
             return;
-        
+        mSwipRefreshLayout.setRefreshing(true);
         AVQuery<AVTravelActivity> activityAVQuery = avmUser.getJoinedTravelActivitysRelation().getQuery();;
         activityAVQuery.include(AVTravelActivity.ISSUER_BASE_INFO_POINTER_KEY);
-        activityAVQuery.orderByDescending("createdAt");
+        activityAVQuery.setLimit(10);
+        activityAVQuery.orderByDescending(AVObject.CREATED_AT);
         activityAVQuery.findInBackground(new FindCallback<AVTravelActivity>() {
             @Override
             public void done(List<AVTravelActivity> list, AVException e) {
-                if(null != e) {
-                    ToastUtil.toastLong(getActivity(),"拉取数据异常！");
+                mSwipRefreshLayout.setRefreshing(false);
+                if(null != e && AVException.OBJECT_NOT_FOUND != e.getCode()) {
+                    ToastUtil.toastLong(getActivity(),"网络异常。"+e.getCode());
                     e.printStackTrace();
                     return;
                 }
@@ -152,5 +115,46 @@ public class ActivityICreatedFragment extends Fragment implements View.OnClickLi
             }
         });
 
+    }
+
+    class ViewHolder {
+        TextView actStateTextView;
+        TextView actHeadlineTextView;
+        TextView actStartDateTextView;
+        TextView actEndDateTextView;
+        TextView actIssuerTextView;
+        TextView actFallInPlaceTextView;
+        ImageView actMapImageView;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_travel_act_i_create, container, false);
+        init(view);
+        initData();
+        return view;
+    }
+
+    private void init(View view) {
+       mTravelActsListView = (ListView) view.findViewById(R.id.activity_list_listview);
+       mTravelActsListView.setAdapter(mListAdapter);
+       mTravelActsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+           @Override
+           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               AVTravelActivity act = mTravelActivities.get(position);
+               Intent intent = new Intent(getActivity(),TravelActivityBrowseActivity.class);
+               intent.putExtra(TravelActivityBrowseActivity.AV_TRAVEL_ACT_KEY,act);
+               startActivity(intent);
+           }
+       });
+        mSwipRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_ly);
+        mSwipRefreshLayout.setOnRefreshListener(this);
+    }
+
+
+
+    private void initData() {
+        onRefresh();
     }
 }

@@ -5,17 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
@@ -33,9 +34,10 @@ import cn.nono.ridertravel.util.SimpleDateUtil;
 /**
  * Created by Administrator on 2016/4/25.
  */
-public class ActivityJoinedFragment extends Fragment implements View.OnClickListener{
+public class ActivityJoinedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     private ListView mTravelActsListView;
+    private SwipeRefreshLayout mSwipRefreshLayout;
     private ArrayList<AVTravelActivity> mTravelActivities = new ArrayList<AVTravelActivity>();
 
     private BaseAdapter mListAdapter = new BaseAdapter() {
@@ -82,9 +84,38 @@ public class ActivityJoinedFragment extends Fragment implements View.OnClickList
         }
     };
 
+
+
     @Override
-    public void onClick(View v) {
-        refreshActivityListFromNet();
+    public void onRefresh() {
+        AVMUser avmUser = (AVMUser) AVUser.getCurrentUser();
+        if(null == avmUser)
+            return;
+        mSwipRefreshLayout.setRefreshing(true);
+        AVQuery<AVTravelActivity> activityAVQuery = avmUser.getJoinedTravelActivitysRelation().getQuery();;
+        activityAVQuery.include(AVTravelActivity.ISSUER_BASE_INFO_POINTER_KEY);
+        activityAVQuery.orderByDescending(AVObject.CREATED_AT);
+        activityAVQuery.setLimit(10);
+        activityAVQuery.findInBackground(new FindCallback<AVTravelActivity>() {
+            @Override
+            public void done(List<AVTravelActivity> list, AVException e) {
+                mSwipRefreshLayout.setRefreshing(false);
+                if(null != e && AVException.OBJECT_NOT_FOUND != e.getCode()) {
+                    ToastUtil.toastLong(getActivity(),"网络异常。"+e.getCode());
+                    e.printStackTrace();
+                    return;
+                }
+
+                if(null == list || list.size() <= 0) {
+                    ToastUtil.toastLong(getActivity(),"没有数据");
+                    return;
+                }
+
+                mTravelActivities.clear();
+                mTravelActivities.addAll(list);
+                mListAdapter.notifyDataSetInvalidated();
+            }
+        });
     }
 
     class ViewHolder {
@@ -102,7 +133,7 @@ public class ActivityJoinedFragment extends Fragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_travel_act_joined, container, false);
         init(view);
-        refreshActivityListFromNet();
+        initData();
         return view;
     }
 
@@ -119,8 +150,9 @@ public class ActivityJoinedFragment extends Fragment implements View.OnClickList
                startActivity(intent);
            }
        });
-        ((Button) view.findViewById(R.id.refresh_btn)).setOnClickListener(this);
 
+        mSwipRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_ly);
+        mSwipRefreshLayout.setOnRefreshListener(this);
     }
 
 
@@ -134,35 +166,7 @@ public class ActivityJoinedFragment extends Fragment implements View.OnClickList
         super.onDestroy();
     }
 
-    private void refreshActivityListFromNet() {
-        AVMUser avmUser = (AVMUser) AVUser.getCurrentUser();
-        if(null == avmUser)
-            return;
-
-
-
-        AVQuery<AVTravelActivity> activityAVQuery = avmUser.getJoinedTravelActivitysRelation().getQuery();;
-        activityAVQuery.include(AVTravelActivity.ISSUER_BASE_INFO_POINTER_KEY);
-        activityAVQuery.orderByDescending("createdAt");
-        activityAVQuery.findInBackground(new FindCallback<AVTravelActivity>() {
-            @Override
-            public void done(List<AVTravelActivity> list, AVException e) {
-                if(null != e) {
-                    ToastUtil.toastLong(getActivity(),"拉取数据异常！");
-                    e.printStackTrace();
-                    return;
-                }
-
-                if(null == list || list.size() <= 0) {
-                    ToastUtil.toastLong(getActivity(),"没有数据");
-                    return;
-                }
-
-                mTravelActivities.clear();
-                mTravelActivities.addAll(list);
-                mListAdapter.notifyDataSetInvalidated();
-            }
-        });
-
+    private void initData() {
+       onRefresh();
     }
 }
